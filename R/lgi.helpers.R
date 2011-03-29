@@ -114,7 +114,7 @@ lgi.file.put <- function(repo, files) {
 
 # this function is mainly for testing, it doesnt logically serve a purpose
 # because it is rarely a good job to block for a single submission
-# it will always be slower, the only use case is it the submission machine is loaded.
+# it will always be slower, the only use case is if the submission machine is loaded.
 lgi.run <- function(..., debug=getOption("lgi.debug"), trace=getOption("lgi.trace")) {
   jobid <- lgi.submit(..., debug=debug, trace=trace)
   status <- lgi.job.status(lgi.qstat(jobid, debug=debug, trace=trace))

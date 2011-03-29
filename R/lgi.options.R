@@ -1,6 +1,7 @@
+# $Id$
 
 #
-# This sets all of my global options
+# This sets all of the global options
 #
 #
 lgi.setDefaultOptions <- function() {
@@ -18,12 +19,12 @@ lgi.setDefaultOptions <- function() {
   #path for filetransfer
   options(lgi.filetransfer="LGI_filetransfer")
   #default application to submit to
-  options(lgi.application='R-2.12') # TODO use NULL as default; add checking somewhere
+  options(lgi.application="R") # TODO use NULL as default; add checking somewhere
   #user options for lgi
   options(lgi.user.options="")
   #should the files be removed afterwards (data files and LGI output files)
   options(lgi.remove.files=TRUE)
-  #logging levels, this will be replaced by something useful soon
+  #logging levels, this could be replaced by something more useful
   options(lgi.debug=TRUE)
   options(lgi.trace=FALSE)
   # should we save the global environment by default.

@@ -1,3 +1,5 @@
+# $Id$
+
 .First.lib <-  function(libname, pkgname) {
   require(snow);
   require(XML);
