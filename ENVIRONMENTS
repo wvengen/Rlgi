@@ -1,0 +1,73 @@
+Overview
+-------------
+
+Environments are one of the trickier aspects to getting this thing to work correctly and fully understand all behavior.
+
+The task for writing Rsge is to make the calls as transparent and as optimal as possible. 
+
+For the calls be completely transparent, calls to sge.parApply should function the same as calls
+to apply. For this to work both the local function environment as well as the
+global environment need to be accessible to the remote tasks. 
+
+To make the calls optimized, only the required values from each enviroment should be passed.
+
+Each value in the environment must be written to disk, then read once for each remote job.
+This can cause considerable overhead if there are large objects stored in memory at the time
+of the call.
+
+
+Implementation
+--------------
+
+The called functions local environment will be saved by default, the 
+the GLOBAL enviroronment will be saved by default if the option
+sge.save.global=TRUE.
+
+There are two savelists where variables can be added.
+
+global.save
+function.savelist
+
+Setting any variables in these savelists will cause the corresponding environment to be cleared.
+
+ie: A call to 
+global.savelist=c("GLOBAL")
+Will case the entire global environment to be cleared, only the value GLOBAL will be available
+on the remote node.
+
+The user can cause either of the environments to be empty by setting the savelist to be an
+empty vector.
+
+global.savelist=vector()
+function.savelist=vector()
+
+The user could also cause the global environment to be empty by setting the following option:
+(This may become the default behavior in a subsequent release)
+sge.options(sge.save.global=FALSE)
+
+Considerations:
+---------------
+
+1. If a function has data in its local scope that is also passed as an argument that the 
+data will be written to disk twice.
+
+2. If funcion.savelist is being used and a function and a value from its environemnt are both passed
+as arguments, then things will be copied twice.
+
+Future Implementation:
+----------------------
+
+I am considering the following implementation in the future:
+
+1. Parse all of the code in the function being passed for remote execution.
+-create a hash of all of the referred variables
+-match these values with the values from the most current scope (with global being the furthest scope
+-build an environment that only contains these required variables.
+-recursively follow functions and build their environemnts with the correct values.
+-possibly we could follow the scope further to see which packages need to be included.
+
+
+This could have the following limitations:
+1. Would not be possible to do lazy loading
+2. Would be non-trivial to implement
+3. might be dependent on R version, could require future support, and version matching

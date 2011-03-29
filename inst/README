@@ -1,0 +1,122 @@
+README
+------
+
+The Rsge package is an integration of the R Programming languages that allows R users to programatically integrate their R models with the SGE environment via qsub.
+
+This implementation of Rsge is based on the source code of the Rlsf package (which is based on the snow package, etc..). Thanks to those guys for saving me tons of time on this!
+
+The program functions as follows:
+
+1. call sge.par(L|s|C|R)Apply(X, fun, ..., join.method=cbind, njobs) or sge.apply 
+2. The data object is split as specified by njobs or batch.size
+3. Each data segment along with the function, arguemnt list (optionally global variables and library names) are saved to a shared network location using the save call.
+4. Each worker process loads the saved file, creates the new environment, executes the saved function call (FUN), and saves the results to the shared network location. 
+5. The master script uses join.method to merge the results together and returns the result.
+
+(sge.submit is similar, but does not split data and is asynchronous)
+
+This new version has the following changes
+
+0.6.x
+----------
+(mostly insignificant)
+
+1. a fix so that the global options will load on R>2.8#
+2. updated DESCRIPTION file
+
+0.6 changes
+-----------
+
+1. savelist is no longer a valid argument - use either global.savelist or function.savelist.
+2. sge.run exists, this will make a call to sge.submit and block for results.
+3. documentation changes.
+4. ENVIRONMENT file exists, which explains how environments are handled.
+5. option sge.save.global exists and is set to true by default. This causes the entire GLOBAL
+environment to be saved and accessible to execution hosts.
+
+Internal changes.
+
+6. Internal creates -FUNCITON and -GLOBAL files to pass the seperate environments.
+7. sge.submit now uses the same call sge.globalPrep to prepare its data files.
+
+
+0.5 CHANGES
+----------
+
+1. for parApply functions, stores X in a task specific file, everything else (funtion, arguments, savelist, package names) are stored in a file that end with GLOBAL.
+2. sge.options are now documented
+3. added the following sge options:
+    -sge.remove.files - should all of the data files be removed after execution?
+    -sge.debug - global config for debug settings. 
+    -sge.trace - global config for info settings (this should be named info and not trace)
+4. There are some additional features to give the user more flexibility with how environments are handled, these may be removed in a later version.
+
+
+Expected changes in 0.7
+
+1. Create central logging components, support following level:
+  -NONE, WARNING, INFO, FINE, DEBUG
+2. remove the following arguements: trace, debug, remove.files - these will be set by the global config options
+3. Consider having the code parse the function expression to determine which variables need to be saved. This would get rid of the global.savelist and function.savelist arguments.
+4. Consider implementing asyncronous parApply, I am not even sure what this looks like yet:)
+5. Remove snow dependency, it is a pain to require to dependency on the package for one function.
+
+LICENSE
+------
+This code is licensed under GPL, use it, modify it, change it, but most of all, enjoy it.
+
+WARRENTY
+-----
+
+There is (of coarse) no warranty for this code. Use it at your own risk. 
+
+INSTALLATION
+------
+
+To install this package, first ensure that snow if installed, then run the following. 
+
+R CMD INSTALL Rsge
+
+This package requires that SGE is installed with the following configuration:
+  Nodes where this package is installed are referred to as submit nodes.
+  Nodes where this package will distribute data for computation are referred to as compute nodes.
+
+  SubmitNode:
+    - SGE should be installed and configured
+      - should be configured as a submit node
+      - should have qsub adn qstat in the path (optionally qacct)
+    - R (tested with 2.6.1/2.7, may work with other versions)
+    - R packages snow and Rsge installed.
+  
+  ComputeNode
+    - R, Rsge, and snow should be installed
+    - Other packages may be required if you use the “packages” option
+    - access to the submission directory (via a shared filesystem like nfs)
+    - The node should be properly configured to be an SGE execute host 
+
+Usage
+------
+
+To get more information about how to use this package, either see:
+  - R docs,
+  - check the test directory to see examples that I used for testing. 
+       - ignore the framework, its a little too much.
+  - Check out the source code, there are only a few hundred lines :)
+
+Configuration:
+-------
+For more on global configuration, see help(sge.options)
+
+TODO:
+
+The following are things that I want to do, or should at least consider doing ... if I have the time. I will have to get these things in a proper bug-tracking environment.
+
+1. Write proper documentation. (getting closer)
+3. Implement asynchronous job arrays (currently asynchronous launches a qsub call for each submit call, it would be better to launch a pre-process call, the have a submit call, maybe...)
+4. Allow users to run jobs without doing the worker prep work (requires that a previous run was run with option(sge.remove.files=TRUE))
+5. Remove the requirement for Rsge/snow installation on nodes.
+6. sge.get.result should accept the actual filename to retrieve, not the input file from the worker.
+7. Eventully, I should consider adding support for Rmpi or something comparable. I can resuse more Rlsf code for this.
+8. Use proper logging levels (at least INFO, WARNING, NONE, DEBUG, FINE)
+========
+$Id: README,v 1.2 2007/04/03 20:24:33 kuhna03 Exp $

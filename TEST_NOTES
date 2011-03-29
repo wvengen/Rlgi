@@ -1,0 +1,5 @@
+Test that -now option works, if it is set, the the program should fail if it cannot run now.
+
+Tested passing libraries, global savelists, and arguments with GLOBAL datas.
+
+
