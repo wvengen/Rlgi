@@ -12,7 +12,7 @@ lgi.setDefaultOptions <- function() {
   #prefix for data files
   options(lgi.file.prefix="Rlgi_data")
   #path for qsub
-  options(lgi.qsub="/tmp/LGI_qsub")
+  options(lgi.qsub="LGI_qsub")
   #path for qstat
   options(lgi.qstat="LGI_qstat")
   #path for filetransfer
@@ -29,9 +29,10 @@ lgi.setDefaultOptions <- function() {
   # should we save the global environment by default.
   options(lgi.save.global=FALSE)
   # global variables that should not be changed, or should be changed very carefully. 
-  options(lgi.qsub.options="-x")
+  options(lgi.qsub.options="-x -i /dev/stdin")
   options(lgi.qstat.options="-x")
   options(lgi.filetransfer.options="-x")
+  #options(lgi.pipe="| fold -w 4000") # avoid R warning "may be truncated in call to system"
 }
 
 lgi.options <- function(...) {

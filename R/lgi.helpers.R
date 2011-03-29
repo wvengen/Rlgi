@@ -16,7 +16,7 @@ lgi.split <- function (x, ncl) {
 
 # return XML document containing job information
 lgi.qstat <- function(jobid=NULL) {
-  cmd <- paste(getOption("lgi.qstat"), getOption("lgi.qstat.options"), jobid);
+  cmd <- paste(getOption("lgi.qstat"), getOption("lgi.qstat.options"), jobid, getOption("lgi.pipe"));
   if(getOption("lgi.debug")) print(paste('Executing:', cmd))
   result <- paste(system(cmd, intern=TRUE), collapse='')
   if(getOption("lgi.debug")) print(paste('Returns:', result))
@@ -54,7 +54,7 @@ lgi.qsub <- function(rcode, application, files=c()) {
   qsub.user.opt <- getOption("lgi.user.options")
   qsub.options  <- getOption("lgi.qsub.options")
   files <- sapply(files, shQuote)
-  cmd <- paste(qsub, '-a', shQuote(application), qsub.user.opt, qsub.options, paste(files,collapse=''))
+  cmd <- paste(qsub, '-a', shQuote(application), qsub.user.opt, qsub.options, paste(files,collapse=' '), getOption("lgi.pipe"))
   if(getOption("lgi.debug")) print(paste('Executing:', cmd))
   result <- paste(system(cmd, intern=TRUE, input=rcode), collapse='')
   if(getOption("lgi.debug")) print(paste('Returns:', result))
@@ -80,7 +80,7 @@ lgi.filetransfer <- function(action, repo, files) {
   if (action=="download" || action=="upload")
     ft.options = gsub('(^|\\s)-x(\\s|$)', '\\1', ft.options)
   files <- sapply(files, shQuote)
-  cmd <- paste(ft, ft.options, action, shQuote(repo), paste(files, collapse=' '))
+  cmd <- paste(ft, ft.options, action, shQuote(repo), paste(files, collapse=' '), getOption("lgi.pipe"))
   if(getOption("lgi.debug")) print(paste('Executing:', cmd))
   result <- paste(system(cmd, intern=TRUE), collapse='')
   if(getOption("lgi.debug")) print(paste('Returns:', result))

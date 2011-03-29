@@ -1,7 +1,7 @@
 # $Id: lgi.submit.R,v 1.3 2007/04/01 22:27:22 coultn Exp $
 
 "lgi.submit" <- function(func, ..., 
-			 application=getOption('lgi.application'),
+                         application=getOption('lgi.application'),
                          global.savelist=NULL, 
                          function.savelist=NULL, 
                          packages=NULL,
@@ -26,10 +26,11 @@
 
   # and submit job
   program <- lgi.bootPrep(file.prefix, FALSE)
-	files <- c(
-      paste(fname, "-GLOBAL", sep=''),
-      paste(fname, "-FUNCTION", sep='')
-    )
+  files <- c(
+    file.path(.path.package("Rlgi"), 'runjob.R'), # TODO upload with other name?
+    paste(fname, "-GLOBAL", sep=''),
+    paste(fname, "-FUNCTION", sep='')
+  )
   result <- lgi.qsub(program, application, files[file.exists(files)])
   # we don't need these files anymore, they're uploaded anyway
   if (getOption("lgi.remove.files")) {
@@ -42,7 +43,7 @@
 
 # return lgi result for job id
 # job must be finished or no results file is present
-lgi.result <- function(jobid) {
+lgi.result <- function(jobid, fname=NA) {
   jobinfo = lgi.qstat(jobid)
   status = lgi.job.status(jobinfo)
   if (status!="finished") stop("Job must be finished to retrieve result")
@@ -52,10 +53,10 @@ lgi.result <- function(jobid) {
   # From a qstat joblist, however, none of these is returned.
   if (is.na(fname)) {
     for(c in xmlChildren(jobinfo[["job"]][["repository_content"]])) {
-  			if (names(c)!="file") next
-        regex = paste('^',getOption("lgi.prefix"),'.*-RESULT$', sep='')
+        if (xmlName(c)!="file") next
         name = xmlAttrs(c)[["name"]]
-        if (grep(regex, name)) {
+        regex = paste('^',getOption("lgi.prefix"),'.*-RESULT$', sep='')
+        if (length(grep(regex, name))>0) {
           if (!is.na(fname)) stop("Multiple result files found in job repository")
           fname <- name
         }

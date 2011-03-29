@@ -98,7 +98,8 @@
     "lgi.x.result <- '", result, "'\n",
     "lgi.x.par <- ", isPar, "\n",
     "lgi.x.parX <- ", X, "\n",
-    paste(readLines(file.path(.path.package("Rlgi"), 'runjob.R')), collapse="\n"),
+    "source('runjob.R')\n",
+    #paste(readLines(file.path(.path.package("Rlgi"), 'runjob.R')), collapse="\n"),
       sep='')
   if (!is.na(comment)) program <- paste("# ", comment, "\n", program, sep='')
   return(program)
