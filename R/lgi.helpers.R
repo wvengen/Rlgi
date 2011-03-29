@@ -15,11 +15,11 @@ lgi.split <- function (x, ncl) {
 }
 
 # return XML document containing job information
-lgi.qstat <- function(jobid=NULL) {
+lgi.qstat <- function(jobid=NULL, debug=getOption("lgi.debug"), trace=getOption("lgi.trace")) {
   cmd <- paste(getOption("lgi.qstat"), getOption("lgi.qstat.options"), jobid, getOption("lgi.pipe"));
-  if(getOption("lgi.debug")) print(paste('Executing:', cmd))
+  lgi.trace('Executing:', cmd, trace=trace)
   result <- paste(system(cmd, intern=TRUE), collapse='')
-  if(getOption("lgi.debug")) print(paste('Returns:', result))
+  lgi.trace('Returns:', result, trace=trace)
   if (length(grep("^\\s*Error", result))>0) {
     warning(result)
     return(NULL)
@@ -49,15 +49,16 @@ lgi.job.repourl <- function(xml) {
 }
 
 # submit LGI job directly, return XML node containing job information
-lgi.qsub <- function(rcode, application, files=c()) {
+lgi.qsub <- function(rcode, application, files=c(), debug=getOption("lgi.debug"), trace=getOption("lgi.trace")) {
   qsub          <- getOption("lgi.qsub")
   qsub.user.opt <- getOption("lgi.user.options")
   qsub.options  <- getOption("lgi.qsub.options")
+  pipe          <- getOption("lgi.pipe")
   files <- sapply(files, shQuote)
-  cmd <- paste(qsub, '-a', shQuote(application), qsub.user.opt, qsub.options, paste(files,collapse=' '), getOption("lgi.pipe"))
-  if(getOption("lgi.debug")) print(paste('Executing:', cmd))
+  cmd <- paste(qsub, '-a', shQuote(application), qsub.user.opt, qsub.options, paste(files,collapse=' '), pipe)
+  lgi.trace('Executing:', cmd, trace=trace)
   result <- paste(system(cmd, intern=TRUE, input=rcode), collapse='')
-  if(getOption("lgi.debug")) print(paste('Returns:', result))
+  lgi.trace('Returns:', result, trace=trace)
   # parse output
   if (length(grep("^\\s*(Error|Cannot)", result))>0) {
     stop(result)
@@ -73,17 +74,18 @@ lgi.qsub <- function(rcode, application, files=c()) {
 }
 
 # low-level LGI filetransfer utility
-lgi.filetransfer <- function(action, repo, files) {
+lgi.filetransfer <- function(action, repo, files, debug=getOption("lgi.debug"), trace=getOption("lgi.trace")) {
   ft          <- getOption("lgi.filetransfer")
   ft.options  <- getOption("lgi.filetransfer.options")
+  pipe          <- getOption("lgi.pipe")
   # broken LGI_filetransfer doesn't accept -x on download :(
   if (action=="download" || action=="upload")
     ft.options = gsub('(^|\\s)-x(\\s|$)', '\\1', ft.options)
   files <- sapply(files, shQuote)
-  cmd <- paste(ft, ft.options, action, shQuote(repo), paste(files, collapse=' '), getOption("lgi.pipe"))
-  if(getOption("lgi.debug")) print(paste('Executing:', cmd))
+  cmd <- paste(ft, ft.options, action, shQuote(repo), paste(files, collapse=' '), pipe)
+  lgi.trace('Executing:', cmd, trace=trace)
   result <- paste(system(cmd, intern=TRUE), collapse='')
-  if(getOption("lgi.debug")) print(paste('Returns:', result))
+  lgi.trace('Returns:', result, trace=trace)
   # parse output
   if (length(grep("^\\s*Error", result))>0) {
     stop(result)
@@ -113,15 +115,16 @@ lgi.file.put <- function(repo, files) {
 # this function is mainly for testing, it doesnt logically serve a purpose
 # because it is rarely a good job to block for a single submission
 # it will always be slower, the only use case is it the submission machine is loaded.
-lgi.run <- function(...) {
-  jobid <- lgi.submit(...)
-  status <- lgi.job.status(lgi.qstat(jobid))
+lgi.run <- function(..., debug=getOption("lgi.debug"), trace=getOption("lgi.trace")) {
+  jobid <- lgi.submit(..., debug=debug, trace=trace)
+  status <- lgi.job.status(lgi.qstat(jobid, debug=debug, trace=trace))
   while(status %in% c("queued", "scheduled", "running")) {
     Sys.sleep(4)
-    status <- lgi.job.status(lgi.qstat(jobid))
+    status <- lgi.job.status(lgi.qstat(jobid, debug=debug, trace=trace))
+    cat("Job status:", status, "\r")
   }
-  print("\n")
+  cat("\n")
   if (status!="finished") stop("Job did not finish succesfully")
-  return(lgi.result(jobid))
+  return(lgi.result(jobid, debug=debug, trace=trace))
 }
 

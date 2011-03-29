@@ -1,5 +1,4 @@
-
-                                        # $Id: lgi.parRapply.R,v 1.2 2006/12/15 15:21:23 kuhna03 Exp $
+# $Id$
 
 lgi.apply <- function(X, MARGIN, FUN, ..., 
                           join.method=cbind,
@@ -11,7 +10,8 @@ lgi.apply <- function(X, MARGIN, FUN, ...,
                           cluster=getOption('lgi.use.cluster'),
                           trace=getOption('lgi.trace'),
                           debug=getOption('lgi.debug'),
-                          file.prefix=getOption('lgi.file.prefix')
+                          file.prefix=getOption('lgi.file.prefix'),
+                          application=getOption('lgi.application')
                          ) {
     if(MARGIN == 1) {
       lgi.parRapply(X, FUN, ...,
@@ -20,7 +20,8 @@ lgi.apply <- function(X, MARGIN, FUN, ...,
                    packages=packages, 
                    global.savelist=global.savelist, 
                    function.savelist=function.savelist,
-                   trace=trace, debug=debug, file.prefix=file.prefix)
+                   trace=trace, debug=debug, file.prefix=file.prefix,
+                   application=application)
     } else {
       lgi.parCapply(X, FUN, ...,
                    join.method=join.method,cluster=cluster,
@@ -28,7 +29,8 @@ lgi.apply <- function(X, MARGIN, FUN, ...,
                    packages=packages, 
                    global.savelist=global.savelist, 
                    function.savelist=function.savelist,
-                   trace=trace, debug=debug, file.prefix=file.prefix)
+                   trace=trace, debug=debug, file.prefix=file.prefix,
+                   application=application)
     } 
 } 
 
@@ -42,7 +44,8 @@ lgi.parCapply <- function(X, FUN, ...,
                           cluster=getOption('lgi.use.cluster'),
                           trace=getOption('lgi.trace'),
                           debug=getOption('lgi.debug'),
-                          file.prefix=getOption('lgi.file.prefix')
+                          file.prefix=getOption('lgi.file.prefix'),
+                          application=getOption('lgi.application')
                          ) {
   if(cluster) {
     lgi.parParApply(t(X), FUN, ..., 
@@ -51,10 +54,11 @@ lgi.parCapply <- function(X, FUN, ...,
                packages=packages, 
                global.savelist=global.savelist, 
                function.savelist=function.savelist,
-               trace=trace, debug=debug, file.prefix=file.prefix, apply.method=2
+               trace=trace, debug=debug, file.prefix=file.prefix, apply.method=2,
+               application=application
                )
   } else {
-    if(trace) cat("Running locally \n")
+    lgi.debug("Running locally", debug=debug)
     apply(X=X, MARGIN=2 ,FUN=FUN, ...)
   }
  
@@ -70,7 +74,8 @@ lgi.parRapply <- function(X, FUN, ...,
                           cluster=getOption('lgi.use.cluster'),
                           trace=getOption('lgi.trace'),
                           debug=getOption('lgi.debug'),
-                          file.prefix=getOption('lgi.file.prefix')
+                          file.prefix=getOption('lgi.file.prefix'),
+                          application=getOption('lgi.application')
                          ) {
   if(cluster) {
     lgi.parParApply(X, FUN, ...,  
@@ -79,10 +84,11 @@ lgi.parRapply <- function(X, FUN, ...,
                 packages=packages, 
                 global.savelist=global.savelist, 
                 function.savelist=function.savelist,
-                trace=trace, debug=debug, file.prefix=file.prefix, apply.method=2
+                trace=trace, debug=debug, file.prefix=file.prefix, apply.method=2,
+                application=application
                 )
   } else {
-    if(trace) cat("Running locally \n")
+    lgi.debug("Running locally", debug=debug)
     apply(X=X, MARGIN=1 ,FUN=FUN, ...)
   }
 }
@@ -97,7 +103,8 @@ lgi.parLapply <- function(X, FUN, ...,
                           cluster=getOption('lgi.use.cluster'),
                           trace=getOption('lgi.trace'),
                           debug=getOption('lgi.debug'),
-                          file.prefix=getOption('lgi.file.prefix')
+                          file.prefix=getOption('lgi.file.prefix'),
+                          application=getOption('lgi.application')
                           ) {
   if(cluster) {
     lgi.parParApply(X, FUN, ...,
@@ -106,10 +113,11 @@ lgi.parLapply <- function(X, FUN, ...,
                 packages=packages, 
                 global.savelist=global.savelist,
                 function.savelist=function.savelist,
-                trace=trace, debug=debug, file.prefix=file.prefix, apply.method=1
+                trace=trace, debug=debug, file.prefix=file.prefix, apply.method=1,
+                application=application
                 )
   } else {
-    if(trace) cat("Running locally\n")
+    lgi.debug("Running locally", debug=debug)
     lapply(X=X, FUN=FUN, ...)
   }
 }
@@ -127,7 +135,8 @@ lgi.parSapply <- function(X, FUN, ...,
                           cluster=getOption('lgi.use.cluster'),
                           trace=getOption('lgi.trace'),
                           debug=getOption('lgi.debug'),
-                          file.prefix=getOption('lgi.file.prefix')
+                          file.prefix=getOption('lgi.file.prefix'),
+                          application=getOption('lgi.application')
                          ) {
   
   if(cluster) {
@@ -139,7 +148,8 @@ lgi.parSapply <- function(X, FUN, ...,
                global.savelist=global.savelist, 
                function.savelist=function.savelist,
                trace=trace, debug=debug, 
-               file.prefix=file.prefix, apply.method=1
+               file.prefix=file.prefix, apply.method=1,
+               application=application
               )
 #    answer <- lgi.parLapply(as.list(x), fun, ...)
       if (USE.NAMES && is.character(X) && is.null(names(answer)))
@@ -156,7 +166,7 @@ lgi.parSapply <- function(X, FUN, ...,
       }
       else answer
   } else {
-    if(trace) cat("Running locally\n")
+    lgi.debug("Running locally", debug=debug)
     sapply(X=X, FUN=FUN, ..., simplify=simplify, USE.NAMES=USE.NAMES)
   } 
 }
@@ -165,74 +175,71 @@ lgi.parParApply <- function (X, FUN, ...,
                            join.method=cbind,
                            njobs,
                            batch.size=getOption('lgi.block.size'),
-                           trace=getOption('lgi.trace'),
                            packages=NULL,
                            global.savelist=NULL,
                            function.savelist=NULL,
                            debug=getOption('lgi.debug'),
+                           trace=getOption('lgi.trace'),
                            file.prefix=getOption('lgi.file.prefix'),
-                           apply.method=2
+                           apply.method=2,
+                           application=getOption('lgi.application')
                          ) {
-  # TODO move to args
-  application=getOption('lgi.application')
   # split X
   if(missing(njobs) && (is.matrix(X) || is.data.frame(X)))
     njobs <- max(1,ceiling(nrow(X)/batch.size))    
   else if(missing(njobs) && (is.vector(X) || is.list(X)))
     njobs <- max(1,ceiling(length(X)/batch.size))    
 
-  if(debug) print(X)
+  lgi.trace('X:',X,trace=trace)
   if(njobs>1)
     rowSet <- lgi.split(X, njobs)
   else
     rowSet <- list(X)
-  if(debug) print(rowSet)    
+  lgi.trace('rowSet:',rowSet, trace=trace)
   prefix <- tempfile(pattern=file.prefix, tmpdir=getwd())
-  # save the GLOBAL data
-  if(apply.method == 1) {
-    lgi.globalPrep(
-                   lapply, X=NULL, FUN=FUN, ...,
-                   global.savelist=global.savelist,
-                   function.savelist=function.savelist,
-                   lgi.packages=packages,
-                   debug=debug,prefix=prefix
-                  )
-  } else if(apply.method ==2) {
-    lgi.globalPrep(
-                   apply, X=NULL, MARGIN=1, FUN=FUN, ...,
-                   global.savelist=global.savelist,
-                   function.savelist=function.savelist,
-                   lgi.packages=packages,
-                   debug=debug,prefix=prefix
-                  )
-  }
-  if(trace) cat("Completed storing environment to disk\n")
-  if(trace) cat("Submitting ",length(rowSet), "jobs...\n")
+
+  #if(trace) cat("Completed storing environment to disk\n")
+  lgi.debug("Submitting",length(rowSet), "jobs...", debug=debug)
   # LGI knows no array jobs as of yet, so submit them one by one
   jobids = c()
   jobrepos = c()
-  #jobsts = c()
   for (i in 1:length(rowSet)) {
-    program <- lgi.bootPrep(prefix, TRUE, rowSet[[i]])
-    result <- lgi.qsub(program, application)
-    jobids = c(jobids, lgi.job.id(result))
-    jobrepos = c(jobrepos, lgi.job.repourl(result))
-    #jobsts = c(jobsts, lgi.job.status(result))
-    # for now just transfer files to each of the children
-    # TODO they should share common repository for environments
-    lgi.file.put(lgi.job.repourl(result), c(
+    if(apply.method==1) {
+      program <- lgi.prepareCall(
+                     lapply, X=rowSet[[i]], FUN=FUN, ...,
+                     global.savelist=global.savelist,
+                     function.savelist=function.savelist,
+                     lgi.packages=packages,
+                     debug=debug,trace=trace,prefix=prefix
+                    )
+    } else if(apply.method==2) {
+      program <- lgi.prepareCall(
+                     apply, X=rowSet[[i]], MARGIN=1, FUN=FUN, ...,
+                     global.savelist=global.savelist,
+                     function.savelist=function.savelist,
+                     lgi.packages=packages,
+                     debug=debug,trace=trace,prefix=prefix
+                    )
+    }
+    
+
+    files <- c(
       paste(prefix, "-GLOBAL", sep=''),
       paste(prefix, "-FUNCTION", sep='')
-    ))
+    )
+    result <- lgi.qsub(program, application, files[file.exists(files)])
+    jobids = c(jobids, lgi.job.id(result))
+    jobrepos = c(jobrepos, lgi.job.repourl(result))
+    if (as.logical(getOption("lgi.remove.files"))) unlink(files)
   } 
-  if(trace) cat("All jobs submitted, waiting for completion.\n") 
+  lgi.debug("All jobs submitted, waiting for completion.", debug=debug) 
   # wait until all jobs are completed
   numqueued = numrunning = numother = 1
   while((numqueued+numrunning) > 0) {
     numqueued = numrunning = numother = 0
     for (c in xmlChildren(lgi.qstat())) {
-			if (xmlName(c)!="job") next
-      state = lgi.job.state(c)
+      if (xmlName(c)!="job") next
+      state = lgi.job.status(c)
       id = lgi.job.id(c)
       if (! id %in% jobids) next
       if (state=="queued") numqueued = numqueued + 1
@@ -240,9 +247,9 @@ lgi.parParApply <- function (X, FUN, ...,
 		  else numother = numother + 1
       # TODO make sure we've had all job ids
     }
-    if (trace) cat(paste("Waiting for jobs:", numqueued, "queued", numrunning, " running /", numother, "     \r"))
+    lgi.debug("Waiting for jobs:  ", numqueued, "queued;   ", numrunning, "running;  ", numother, "other      \r", endl=FALSE)
   }
-  if (trace) cat("\n")
+  lgi.debug("")
 
 #  if(lgi.checkNotNow(result)) {
 #    cat("now option set, could not run now on cluster, running local.\n")
@@ -252,31 +259,18 @@ lgi.parParApply <- function (X, FUN, ...,
 #      return(apply(X=X, MARGIN=1, FUN=FUN, ...))
 #    }
 #  }
-  if(trace) cat("All jobs completed\n") 
-  # retrieve results from all jobs
-  for(i in 1:length(rowSet)) {
-    jobids = jobid[i]
-    repourl = repourls[i]
-    # TODO finish
-  }
-
   # TODO output stdout/stderr
-  # I am not sure how well R can handle this, maybe it will not scale
-  #system(paste("for i in `ls *.e",jobid,"*`; do cat $i; done", sep=""))
-  #if(as.logical(getOption("lgi.remove.files"))) {
-  #  system(paste("rm *.e",jobid,"*; rm *.o", jobid, "*;" , sep=""))
-  #}
-  results <- lapply( filenames, lgi.get.result, jobid = jobid)
-  if(as.logical(getOption("lgi.remove.files"))) file.remove(paste(prefix, "-GLOBAL",   sep=""))
-  if(debug) print (results)
+  results <- lapply(jobids, lgi.result)
+  lgi.trace('results:',results,trace=trace)
+  # TODO update error handling wrt LGI
   # When c is run the try-errors are converted into strings
   # so its probably better to not combine errors, I
   # still need to seperately test this for cbind and consider other operations
-  if(any(lapply(results , function(e1) class(e1) == "try-error") == TRUE)) {
-    print("Not running join method since there are errors")
-    results
-  } else {
+  #if(any(lapply(results , function(e1) class(e1) == "try-error") == TRUE)) {
+  #  print("Not running join method since there are errors")
+  #  results
+  #} else {
     retval <- docall(join.method, results)
     retval
-  }
+  #}
 }

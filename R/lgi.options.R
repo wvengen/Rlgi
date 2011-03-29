@@ -24,8 +24,8 @@ lgi.setDefaultOptions <- function() {
   #should the files be removed afterwards (data files and LGI output files)
   options(lgi.remove.files=TRUE)
   #logging levels, this will be replaced by something useful soon
-  options(lgi.debug=TRUE) # TODO replace with FALSE
-  options(lgi.trace=TRUE)
+  options(lgi.debug=TRUE)
+  options(lgi.trace=FALSE)
   # should we save the global environment by default.
   options(lgi.save.global=FALSE)
   # global variables that should not be changed, or should be changed very carefully. 

@@ -1,4 +1,4 @@
-# $Id: lgi.submit.R,v 1.3 2007/04/01 22:27:22 coultn Exp $
+# $Id$
 
 "lgi.submit" <- function(func, ..., 
                          application=getOption('lgi.application'),
@@ -6,6 +6,7 @@
                          function.savelist=NULL, 
                          packages=NULL,
                          debug=getOption('lgi.debug'),
+                         trace=getOption('lgi.trace'),
                          file.prefix=getOption('lgi.file.prefix')
                          )
 # savelist is a character vector of *names* of objects to be
@@ -17,11 +18,14 @@
                   global.savelist=global.savelist,
                   function.savelist=function.savelist,
                   lgi.packages=packages,
-                  debug=debug,prefix=fname
+                  debug=debug,trace=trace,prefix=fname
                  )
 
   # and submit job
-  files <- c(paste(fname, "-GLOBAL", sep=''))
+  files <- c(
+    paste(fname, "-GLOBAL", sep=''),
+    paste(fname, "-FUNCTION", sep='')
+  )
   result <- lgi.qsub(program, application, files[file.exists(files)])
   # we don't need these files anymore, they're uploaded anyway
   if (as.logical(getOption("lgi.remove.files"))) {
@@ -33,7 +37,11 @@
 
 # return lgi result for job id
 # job must be finished or no results file is present
-lgi.result <- function(jobid, fname=NA) {
+lgi.result <- function(jobid,
+                       fname=NA,
+                       debug=getOption('lgi.debug'),
+                       trace=getOption('lgi.trace')
+) {
   jobinfo = lgi.qstat(jobid)
   status = lgi.job.status(jobinfo)
   if (status!="finished") stop("Job must be finished to retrieve result")

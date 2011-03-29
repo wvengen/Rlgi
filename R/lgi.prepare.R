@@ -1,4 +1,4 @@
-# $Id: lgi.submit.R,v 1.3 2007/04/01 22:27:22 coultn Exp $
+# $Id$
 
 #This will be coded so that savelists and packages can be sent to either.
 "lgi.globalPrep" <- 
@@ -7,7 +7,8 @@
            global.savelist=NULL,
            function.savelist=NULL,
            lgi.packages=NULL, 
-           debug=getOption("lgi.debug")
+           debug=getOption("lgi.debug"),
+           trace=getOption("lgi.trace")
   ) 
   {
     # TODO test that lgi.x.* is not in global savelist
@@ -16,8 +17,8 @@
     # save the function call, use either global.savelist or globalenv()
     lgi.call <- as.call(list(func, ...) )
     if(is.null(global.savelist)) {
-      if(getOption("lgi.save.global")==TRUE) {
-        if(debug) print("Saving entire global environment")
+      if(as.logical(getOption("lgi.save.global"))) {
+        lgi.debug("Saving entire global environment\n", debug=debug)
         global.savelist = ls(globalenv())
       } else {
         global.savelist = vector()
@@ -55,8 +56,8 @@
       # I should also test that there are no collisions between the arguments and scope
     #}
 
-    if(debug) print(paste("Global Environment variable:", global.savelist))
-    if(debug) print(paste("Packaged:", lgi.packages))
+    lgi.debug("Global Environment variable:", global.savelist, debug=debug)
+    lgi.debug("Packaged:", lgi.packages, debug=debug)
     if("lgi.call" %in% global.savelist) 
       warning("lgi.call is a reserved variable name, it cannot be passed to the global environmnet")
     if("lgi.packages" %in% global.savelist) 
@@ -73,21 +74,36 @@
                               global.savelist=NULL,
                               function.savelist=NULL,
                               lgi.packages=vector(), 
-                              debug=getOption("lgi.debug")) {
+                              debug=getOption("lgi.debug"),
+                              trace=getOption("lgi.trace")) {
 
   result <- paste(basename(prefix), '-RESULT', sep='')
   resultqt <- gsub("'", "\\\\'", shQuote(result))
-  global.filename <- paste(basename(prefix), '-GLOBAL', sep='')
+  global.filename <- paste(prefix, '-GLOBAL', sep='')
+  function.filename <- paste(prefix, '-FUNCTION',   sep='') 
 
-  # save the function call, use either global.savelist or globalenv()
+  # global environment
   lgi.x.call <- as.call(list(func, ...) )
   if(is.null(global.savelist)) {
     if(getOption("lgi.save.global")==TRUE) {
-      if(debug) print("Saving entire global environment")
+      lgi.debug("Saving entire global environment", debug=debug)
       global.savelist = ls(globalenv())
     } else {
       global.savelist = vector()
     }
+  }
+
+  # save function environment when present
+  if(!is.null(function.savelist)) {
+    # please look at Rsge for details, don't know exactly what happens here
+    if(is.null(lgi.x.call$FUN)) {
+      e1 <- environment(lgi.x.call[[1]])
+      environment(lgi.x.call[[1]]) <- new.env(parent = globalenv())
+    } else {
+      e1 <- environment(lgi.x.call$FUN)  
+      environment(lgi.x.call$FUN) <-  new.env(parent = globalenv())
+    } 
+    save(list=function.savelist, file=function.filename, envir=e1)
   }
 
   if("lgi.x.call" %in% global.savelist) 
@@ -97,15 +113,18 @@
 
   prog <- paste(
     paste(sapply(rev(lgi.packages), function(x){paste("library(",x,", character.only=TRUE)\n", sep='')}), collapse=''),
-    "load('", global.filename, "')\n",
+    "load('", basename(global.filename), "')\n",
+    ifelse(!is.null(function.savelist), paste("load('", basename(function.filename), "')\n", sep=''), ''),
+    ifelse(as.logical(debug), "print(lgi.x.call)\n", ''),
     "lgi.x.result <- eval(lgi.x.call)\n",
-    "print(lgi.x.result)\n",
+    ifelse(as.logical(debug), "print(lgi.x.result)\n", ''),
     "save(lgi.x.result, file='", result, "')\n",
     "system('LGI_filetransfer -j . upload `xml repository_url <LGI_job_specifics` ", resultqt, "')\n",
       sep='')
   if (!is.na(comment)) prog <- paste("# ", comment, "\n", prog, sep='')
-  if(debug) print(paste("Global environment:", global.savelist))
-  if(debug) print(paste("Program to submit:\n", prog))
+  lgi.trace("Global environment:", global.savelist, trace=trace)
+  if(!is.null(function.savelist)) lgi.trace("Function environment:", function.savelist, trace=trace)
+  lgi.trace("Program to submit:\n", prog, trace=trace)
   return(prog)
 }
 
