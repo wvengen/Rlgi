@@ -8,7 +8,6 @@
 - fix warning "line * may be truncated in call to system(, intern = TRUE)"
 - local computation if remote takes too long
 - add option to delete LGI jobs when result is safe
-- update documentation (very much outdated currently)
 - write examples
 - add&update tests
 
