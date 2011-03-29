@@ -1,28 +1,27 @@
-\name{lgi.job.status}
-\alias{lgi.job.status}
-\title{Returns the job status from an LGI result}
+\name{lgi.job.id}
+\alias{lgi.job.id}
+\title{Returns the jobid from an LGI result}
 \description{
-  Return the LGI job status from the output of an LGI command
+  Return the LGI job id from the output of an LGI command
   like \code{lgi.qsub} or \code{lgi.qstat}.
 }
 
 \usage{
-lgi.job.status(result)
+lgi.job.id(result)
 }
 \arguments{
   \item{result}{Resulting output from LGI qsub or qstat call}
 }
 \value{
-  LGI status of job as string.
+  integer id of job.
 }
- 
+
 \author{W. van Engen \email{wvengen@nikhef.nl}}
 
 \seealso{
-  \code{\link[Rlgi]{lgi.job.id}}
+  \code{\link[Rlgi]{lgi.job.status}}
   \code{\link[Rlgi]{lgi.job.repourl}}
   \code{\link[Rlgi]{lgi.qsub}}
   \code{\link[Rlgi]{lgi.qstat}}
 }
-
 \keyword{interface}

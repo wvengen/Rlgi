@@ -17,27 +17,31 @@
                packages=NULL, global.savelist=NULL,function.savelist=NULL,
                cluster =getOption("lgi.use.cluster"),
                trace=getOption("lgi.trace"), debug=getOption("lgi.debug"),
-               file.prefix=getOption("lgi.file.prefix"))
+               file.prefix=getOption("lgi.file.prefix"),
+               application=getOption("lgi.application"))
   lgi.parRapply(X, FUN, ..., join.method=cbind, 
                njobs, batch.size=getOption('lgi.block.size'),
                packages=NULL, global.savelist=NULL, function.savelist=NULL,
                cluster =getOption("lgi.use.cluster"),
                trace=getOption("lgi.trace"), debug=getOption("lgi.debug"),
-               file.prefix=getOption("lgi.file.prefix"))
+               file.prefix=getOption("lgi.file.prefix"),
+               application=getOption("lgi.application"))
  
   lgi.parCapply(X, FUN, ..., join.method=cbind, 
                njobs, batch.size=getOption('lgi.block.size'),
                packages=NULL, global.savelist=NULL, function.savelist=NULL,
                cluster =getOption("lgi.use.cluster"),
                trace=getOption("lgi.trace"), debug=getOption("lgi.debug"),
-               file.prefix=getOption("lgi.file.prefix"))
+               file.prefix=getOption("lgi.file.prefix"),
+               application=getOption("lgi.application"))
  
   lgi.parLapply(X, FUN, ..., join.method=c, 
                njobs, batch.size=getOption('lgi.block.size'),
                packages=NULL, global.savelist=NULL, function.savelist=NULL,
                cluster =getOption("lgi.use.cluster"),
                trace=getOption("lgi.trace"), debug=getOption("lgi.debug"),
-               file.prefix=getOption("lgi.file.prefix")) 
+               file.prefix=getOption("lgi.file.prefix"),
+               application=getOption("lgi.application"))
 
   lgi.parSapply(X, FUN, ...,  
                 USE.NAMES=TRUE, simplify=TRUE,
@@ -46,7 +50,8 @@
                 packages=NULL, global.savelist=NULL, function.savelist=NULL,
                 cluster=getOption("lgi.use.cluster"),
                 trace=getOption("lgi.trace"), debug=getOption("lgi.debug"),
-                file.prefix=getOption("lgi.file.prefix"))
+                file.prefix=getOption("lgi.file.prefix"),
+                application=getOption("lgi.application"))
   lgi.parParApply(X, FUN, ...,
                join.method=cbind,
                njobs,
@@ -56,7 +61,8 @@
                global.savelist=NULL, function.savelist=NULL,
                debug=getOption("lgi.debug"),
                file.prefix=getOption('lgi.file.prefix'),
-               apply.method
+               apply.method,
+               application=getOption("lgi.application")
               )
 }
 
@@ -79,6 +85,7 @@
   \item{USE.NAMES}{Determines if the sapply use names functionality should be used}
   \item{simplify}{Detemines if the sapply simplify functionality should be used}
   \item{apply.method}{tells apply if it should apply as a list or matrix}
+  \item{application}{LGI application to submit to}
 }
 \details{
 
@@ -98,6 +105,7 @@ Returns an object whose type is determined by the join.method. This object shoul
 }
 
 \author{Dan Bode \email{dbode@univaud.com}}
+\author{W. van Engen \email{wvengen@nikhef.nl}}
 \examples{
 \dontrun{  
  # there are tons of examples (actually my crude unit tests)

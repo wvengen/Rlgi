@@ -4,6 +4,7 @@
 \description{
 This functions splits an object into a number of pieces as specified by ncl. 
 }
+
 \usage{
 lgi.split(x, ncl)
 }
@@ -12,7 +13,7 @@ lgi.split(x, ncl)
   \item{ncl}{Number of segments that the object should be split into.}
 }
 \details{
-  This method is an internal helper method that is used by parApply to split the objects into segments that are distributed to nodes of an SGE cluster.
+  This method is an internal helper method that is used by parApply to split the objects into segments that are distributed to nodes of an LGI cluster.
   This function relies on the splitIndices method from the snow package to determine how many rows each segment should have.
 
 }
@@ -22,7 +23,4 @@ lgi.split(x, ncl)
  
 \author{Dan Bode}
 
-\examples{
-
-}
 \keyword{interface}
