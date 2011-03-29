@@ -1,5 +1,5 @@
-library(Rsge)
-#sge.options(sge.remove.files="FALSE")
+library(Rlgi)
+#lgi.options(lgi.remove.files="FALSE")
 # This script has all of the test that I ran on environments 
 # to determine the required SGE support
 #
@@ -11,7 +11,7 @@ f1 = function(y) {
   f3 = function(x) {
     f2(x,y)
   }
-  sge.parLapply(X=c(1:6), FUN=f3, njobs=3)
+  lgi.parLapply(X=c(1:6), FUN=f3, njobs=3)
 }
 r1Par <- f1(1)
 
@@ -41,17 +41,17 @@ f4 = function(global.savelist=NULL) {
     GLOBAL1 + x
   }
       #ls(environment(f5))
-  sge.parLapply(1:3, f6, njobs=3, global.savelist=global.savelist)
+  lgi.parLapply(1:3, f6, njobs=3, global.savelist=global.savelist)
 }
 
 
-sge.options(sge.save.global=TRUE)
+lgi.options(lgi.save.global=TRUE)
 # with an empty vector global env is not visable.
 e1 = f4(global.savelist=vector())
 ERR1 = any(lapply(e1 , function(e) class(e) == "try-error") == TRUE)
 # global varialbe is visible by default
 r2Par = f4()
-sge.options(sge.save.global=FALSE)
+lgi.options(lgi.save.global=FALSE)
 # not saving global environment by default.
 e2 <- f4()
 ERR2 <- any(lapply(e2 , function(e) class(e) == "try-error") == TRUE)
@@ -67,9 +67,9 @@ r3 = g1(1)
 
 # GLOBAL object needs to be explicitly added 
 
-sge.options(sge.save.global=TRUE)
-r3Par = sge.parLapply(c(1), g1)
-r3.2Par = sge.parLapply(c(1), g1, global.savelist=c("GLOBAL2"))
+lgi.options(lgi.save.global=TRUE)
+r3Par = lgi.parLapply(c(1), g1)
+r3.2Par = lgi.parLapply(c(1), g1, global.savelist=c("GLOBAL2"))
 
 # verify that a local environment created in g2/g3 will be passed 
 # as a part of the function environment
@@ -86,7 +86,7 @@ g3 = function(x, function.savelist=NULL) {
   LOCAL1 <- 1
   f3 = function(y,z) y+z + LOCAL1
   f4 = function(a, x) f3(a,x)
-  sge.run(f4, 2, x, function.savelist=function.savelist)
+  lgi.run(f4, 2, x, function.savelist=function.savelist)
 }
 r4Sub = g3(2)
 r4.2Sub = g3(2, function.savelist=c("f3"))
@@ -103,13 +103,13 @@ r5 = g4(1)
 g5 = function(x) {
   f3 = function(y,z) y+z
   f4 = function(a) f3(a,x) + GLOBAL3
-  sge.parLapply(100:104, f4)
+  lgi.parLapply(100:104, f4)
 }
 r5Par = g5(1)
-sge.options(sge.save.global=FALSE)
+lgi.options(lgi.save.global=FALSE)
 e3 = g5(1)
 ERR3 <- any(lapply(e3 , function(e) class(e) == "try-error") == TRUE)
-sge.options(sge.save.global=TRUE)
+lgi.options(lgi.save.global=TRUE)
 
 # 
 # Several levels of variables
@@ -134,7 +134,7 @@ g6Par <- function(x, function.savelist=NULL) {
     f4 <- function(a) {
       a + l1 + l2 + x
     }
-    sge.parLapply(1:9, f4, njobs=3, function.savelist=function.savelist)
+    lgi.parLapply(1:9, f4, njobs=3, function.savelist=function.savelist)
   }
   f3()
 }
@@ -168,7 +168,7 @@ g7Par = function(x, global.savelist=NULL, function.savelist=NULL) {
       l3 = 100000
       f5 = function(z) l1 + l2 + x + z + GLOBAL3
       #print(global.savelist)
-      sge.parLapply(
+      lgi.parLapply(
         c(1.5, 2.6, 3.7, 4.8, 5.9, 6.05, 7.1, 8.2, 9.3, 10.4), f5,
         global.savelist=global.savelist, function.savelist=function.savelist,
         njobs=4
@@ -206,7 +206,7 @@ g8S <- function(function.savelist=NULL, global.savelist=NULL) {
   g9 <- function() {
     f8(GLOBAL8)
   }
-  sge.run(g9, function.savelist=function.savelist, global.savelist=global.savelist)
+  lgi.run(g9, function.savelist=function.savelist, global.savelist=global.savelist)
 }
 
 r8Sub <- g8S()
@@ -227,7 +227,7 @@ g9Par <- function(function.savelist=NULL, global.savelist=NULL) {
   g9 <- function(x) {
     x+f8(GLOBAL8)
   }
-  sge.parLapply(1:10, g9, function.savelist=function.savelist, global.savelist=global.savelist, njobs=3)
+  lgi.parLapply(1:10, g9, function.savelist=function.savelist, global.savelist=global.savelist, njobs=3)
 }
 
 r9Par <- g9Par()
@@ -246,7 +246,7 @@ g10Par = function(x, global.savelist=NULL, function.savelist=NULL) {
     f4 = function() {
       l3 = 100000
       f5 = function(z, l3, x) l1 + l2 + x + z + GLOBAL3
-      sge.parLapply(
+      lgi.parLapply(
         c(1.5, 2.6, 3.7, 4.8, 5.9, 6.05, 7.1, 8.2, 9.3, 10.4), f5, l3, x, 
         njobs=4
       )
@@ -283,7 +283,7 @@ g12Par = function(x) {
       f5 = function(z, l3, x) {
         l1 + l2 + x + z + GLOBAL3 + mean(Milk[[1]]) 
       }
-      sge.parSapply(
+      lgi.parSapply(
         c(1.5, 2.6, 3.7, 4.8, 5.9, 6.05, 7.1, 8.2, 9.3, 10.4), f5, l3, x,
         packages=c("nlme"), njobs=4
       )
@@ -299,7 +299,7 @@ ft = function(x) x+GLOBAL4
 # I got rid of these
 #tryCatch(
 #  {
-#    sge.parLapply(c(1,2,3,4), ft, savelist=c("GLOBAL4", "sge.call"))
+#    lgi.parLapply(c(1,2,3,4), ft, savelist=c("GLOBAL4", "lgi.call"))
 #    options(test.err1="FALSE")
 #  }, error = function(ex) {
 #    options(test.err1="TRUE")
@@ -307,7 +307,7 @@ ft = function(x) x+GLOBAL4
 #)#end try-catch
 #tryCatch(
 #  {
-#    sge.parLapply(c(1,2,3,4), ft, savelist=c("GLOBAL4", "sge.packages"))
+#    lgi.parLapply(c(1,2,3,4), ft, savelist=c("GLOBAL4", "lgi.packages"))
 #    options(test.err2="FALSE")
 #  }, error = function(ex) {
 #    options(test.err2="TRUE")
@@ -315,7 +315,7 @@ ft = function(x) x+GLOBAL4
 #)#end try-catch
 #tryCatch(
 #  {
-#    sge.parLapply(c(1,2,3,4), ft, savelist=c("GLOBAL4", "X"))
+#    lgi.parLapply(c(1,2,3,4), ft, savelist=c("GLOBAL4", "X"))
 #    options(test.err3="FALSE")
 #  }, error = function(ex) {
 #    options(test.err3="TRUE")
@@ -349,7 +349,7 @@ g13Par = function(x, global.savelist=NULL, function.savelist=NULL) {
     f4 = function() {
       m2 <- array(1:20, dim=c(4,5))
       f5 = function(z, x) l1 + l2 + x + z + GLOBAL3
-      sge.parRapply(
+      lgi.parRapply(
         m2, f5, x,
         global.savelist=global.savelist, function.savelist=function.savelist,
         njobs=4

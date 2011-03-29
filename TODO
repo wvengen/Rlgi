@@ -1,0 +1,12 @@
+
+- make fetching results work
+- make parApply work
+- update documentation (very much outdated currently)
+- write examples
+- add&update tests
+
+performance improvements:
+- use shared GLOBAL/FUNCTION repository for parApply
+- remember file prefix somehow so qstat isn't needed when fetching results
+- prbly more
+

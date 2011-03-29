@@ -1,14 +1,11 @@
-Package: Rsge
-Title: Interface to the SGE Queuing System
-Date: 2009-5-14
-Version: 0.6.3
-Author: Dan Bode <bodepd@yahoo.com>
-Description: This package provides functions for using R with the SGE
-        cluster/grid queuing system.
-Depends: snow
-SystemRequirements: Requires SGE (qsub, qstat, optionally qacct)
-Maintainer: Dan Bode <bodepd@yahoo.com>
-License: LGPL
-Packaged:
-Repository: CRAN
-Date/Publication: 2009-05-15 11:25:59
+Package: Rlgi
+Title: Interface to the Leiden Grid Infrastructure
+Date: 2010-12-14
+Version: 0.0.1
+Author: Willem van Engen <wvengen@nikhef.nl>
+Description: This package provides functions for using R with the 
+        Leiden Grid Infrastructure distributed computing system.
+Depends: snow, XML
+SystemRequirements: Requires LGI (LGI_qsub, LGI_qstat, LGI_filetransfer)
+Maintainer: Willem van Engen <wvengen@nikhef.nl>
+License: GPL

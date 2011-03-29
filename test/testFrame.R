@@ -3,7 +3,7 @@
 # to be created in your cluster, these test should only be performed for 
 # development purposes
 
-library(Rsge)
+library(Rlgi)
 library(nlme)
 
 # create matrix data structure
@@ -20,7 +20,7 @@ makeVector <- function(nrow, ncol) {
 }
 
 makeMilk <- function(x, y) Milk
-sge.testParApply <- function(X, FUN, ..., 
+lgi.testParApply <- function(X, FUN, ..., 
                               debug=FALSE, njobs,
                               join.method=cbind, par.call="R",
 			      packages=NULL,
@@ -30,17 +30,17 @@ sge.testParApply <- function(X, FUN, ...,
   if(par.call == "R") {
     num = 1
     f1  = apply
-    f2  = sge.parRapply
+    f2  = lgi.parRapply
   } else if(par.call == "C") {
     num = 2
     f1  = apply
-    f2  = sge.parCapply
+    f2  = lgi.parCapply
   } else if(par.call == "L") {
     f1  = lapply
-    f2  = sge.parLapply
+    f2  = lgi.parLapply
   } else if(par.call == "S") {
     f1  = sapply
-    f2  = sge.parSapply
+    f2  = lgi.parSapply
   }
   if(is.null(num)) {
     mr1    <- f1(X, FUN, ...)
@@ -67,7 +67,7 @@ sge.testParApply <- function(X, FUN, ...,
 # creates the test objects and determines
 #
 
-sge.multiTestParApply <- function(nrow, ncol, 
+lgi.multiTestParApply <- function(nrow, ncol, 
                                    FUN, ..., 
                                    min.jobs=1, max.jobs=nrow, 
                                    obj.call=makeMatrix,
@@ -76,7 +76,7 @@ sge.multiTestParApply <- function(nrow, ncol,
   v1 <- vector()
   for(i in min.jobs:max.jobs) {
     cat(paste(i, '\n'))
-    v1[[i+1-min.jobs]] <- sge.testParApply(x1, FUN, ..., 
+    v1[[i+1-min.jobs]] <- lgi.testParApply(x1, FUN, ..., 
                                  njobs=i, debug=debug) 
     cat(paste(v1[[i+1-min.jobs]], '\n'))
      if(debug)  print(v1)
@@ -89,7 +89,7 @@ sge.multiTestParApply <- function(nrow, ncol,
 #
 #
 
-sge.massiveTestParApply <- function(r1, r2, c1, c2, fun, ..., debug=FALSE) {
+lgi.massiveTestParApply <- function(r1, r2, c1, c2, fun, ..., debug=FALSE) {
  if(c1 < 2 || c2 < 2) {
    warning("Number must be greater than 1")
    return(NULL)
@@ -100,7 +100,7 @@ sge.massiveTestParApply <- function(r1, r2, c1, c2, fun, ..., debug=FALSE) {
 # having only one column is not supported 
   for(j in c1:c2) {
     cat(paste(i,j,'\n', sep="|"))
-    v1[[j+1-c1]] <- sge.multiTestParApply(i,j,fun, ..., debug=debug)
+    v1[[j+1-c1]] <- lgi.multiTestParApply(i,j,fun, ..., debug=debug)
   }
   v2[[i+1-r1]] <- all(v1)
  } 
@@ -117,47 +117,47 @@ func3 <- function(x, y) {
 func4 <- function(x) x+y
 func5 <- function(x) x[[1]][[1]] <- x[[1]][[1]] + y +z
 debug=FALSE
-#sge.massiveTestParApply(1, 3, 2, 3, func1)
-#sge.massiveTestParApply(2, 3, 4, 5 , mean, join.method=c)
-#sge.massiveTestParApply(57,59, 556, 559, func2, 4, 5, max.jobs=5)
-#sge.massiveTestParApply(102,116,214,217, 
+#lgi.massiveTestParApply(1, 3, 2, 3, func1)
+#lgi.massiveTestParApply(2, 3, 4, 5 , mean, join.method=c)
+#lgi.massiveTestParApply(57,59, 556, 559, func2, 4, 5, max.jobs=5)
+#lgi.massiveTestParApply(102,116,214,217, 
 #                        func2, 4, 5, 
 #                        min.jobs=5, max.jobs=10, debug=debug)
-#sge.massiveTestParApply(1034,1034,8007,8008, 
+#lgi.massiveTestParApply(1034,1034,8007,8008, 
 #                        func2, 4, 5, 
 #                        min.jobs=27, max.jobs=29, debug=debug,
 #                        obj.call=makeArray, par.call="R")
-#sge.massiveTestParApply(37,40,1001,1007, 
+#lgi.massiveTestParApply(37,40,1001,1007, 
 #                       func2, 4, 5, 
 #                        min.jobs=5, max.jobs=9, debug=debug,
 #                        obj.call=makeArray, par.call="C")
-#sge.massiveTestParApply(9,18,4,5, 
+#lgi.massiveTestParApply(9,18,4,5, 
 #                        mean, 4, 5, 
 #                        min.jobs=1, max.jobs=5, debug=debug,
 #                        obj.call=makeArray, par.call="C", join.method=c)
-#sge.massiveTestParApply(2,2,1000,1015, 
+#lgi.massiveTestParApply(2,2,1000,1015, 
 #                        func2, 4, 5, 
 #                        min.jobs=30, max.jobs=37, debug=debug,
 #                        obj.call=makeVector, par.call="L", 
 #                        join.method=c)
-#sge.massiveTestParApply(2,2,1899,1902, 
+#lgi.massiveTestParApply(2,2,1899,1902, 
 #                        func2, 4, 5, 
 #                        min.jobs=3, max.jobs=6, debug=debug,
 #                        obj.call=makeVector, par.call="S", 
 #                        join.method=c)
-#sge.massiveTestParApply(2,2, 1899, 1899,
+#lgi.massiveTestParApply(2,2, 1899, 1899,
 #                       func3, 3, packages=c("nlme"),
 #                       min.jobs=3,max.jobs=5, debug=debug,
 #                       obj.call=makeVector, par.call="S",
 #                       join.method=c)
 y <- 10
 z <- 20
-#sge.massiveTestParApply(2,2, 9, 9,
+#lgi.massiveTestParApply(2,2, 9, 9,
 #                       func4, savelist=c("y"),
 #                       min.jobs=3,max.jobs=5, debug=debug,
 #                       obj.call=makeVector, par.call="S",
 #                       join.method=c)
-sge.massiveTestParApply(2,2, 9, 9,
+lgi.massiveTestParApply(2,2, 9, 9,
                        func5, savelist=c("y", "z"),
                        min.jobs=3,max.jobs=3, debug=TRUE,
                        obj.call=makeMilk, par.call="S",

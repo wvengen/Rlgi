@@ -1,11 +1,11 @@
-\name{sge.split}
-\alias{sge.split}
+\name{lgi.split}
+\alias{lgi.split}
 \title{Splits an object and returns a list containing those segments}
 \description{
 This functions splits an object into a number of pieces as specified by ncl. 
 }
 \usage{
-sge.split(x, ncl)
+lgi.split(x, ncl)
 }
 \arguments{
   \item{x}{Object to be split (only supports matrix, array, data.frame, list, and vector)}
