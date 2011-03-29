@@ -32,7 +32,7 @@ lgi.setDefaultOptions <- function() {
   options(lgi.qsub.options="-x -i /dev/stdin")
   options(lgi.qstat.options="-x")
   options(lgi.filetransfer.options="-x")
-  #options(lgi.pipe="| fold -w 4000") # avoid R warning "may be truncated in call to system"
+  #options(lgi.pipe="| fold -w 4000") # avoid R warning "may be truncated in call to system"; may break stuff
 }
 
 lgi.options <- function(...) {

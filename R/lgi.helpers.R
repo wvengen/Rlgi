@@ -110,30 +110,18 @@ lgi.file.put <- function(repo, files) {
 }
 
 
-# I decided against this, its just too dangerous, people can clean up their 
-# files themselves!
-#lgi.cleanup <- function() {
-#  prefix <- getOption("lgi.file.prefix")
-#  script <- getOption("lgi.script")
-#  if(nchar(prefix) < 1 || nchar(script) < 1) {
-#    warning(paste("invalid file prefix"))
-#    return(NULL)
-#  }
-# be careful if you ever change these line, it could erase an entire dir.
-# also this could be bad if the PREFIX is not something unique
-#  system(paste("rm -f ", prefix,"*", sep="" ))
-#  system(paste("rm -f ", script,".*", sep="" ))
-#}
-
 # this function is mainly for testing, it doesnt logically serve a purpose
-# because it is rarely a good job to blobk for a single submission
+# because it is rarely a good job to block for a single submission
 # it will always be slower, the only use case is it the submission machine is loaded.
 lgi.run <- function(...) {
-  info <- lgi.submit(...)
-  status <- lgi.job.status(info$jobid)
-  while(status %in% c("scheduled", "running")) {
+  jobid <- lgi.submit(...)
+  status <- lgi.job.status(lgi.qstat(jobid))
+  while(status %in% c("queued", "scheduled", "running")) {
     Sys.sleep(4)
-    status <- lgi.job.status(info$jobid)
+    status <- lgi.job.status(lgi.qstat(jobid))
   }
-  lgi.list.get.result(info)
+  print("\n")
+  if (status!="finished") stop("Job did not finish succesfully")
+  return(lgi.result(jobid))
 }
+

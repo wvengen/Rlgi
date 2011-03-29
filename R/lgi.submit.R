@@ -13,29 +13,19 @@
 {
    
   fname <- tempfile(pattern = file.prefix, tmpdir = getwd())
-  lgi.globalPrep(func, ..., 
-                 global.savelist=global.savelist,
-                 function.savelist=function.savelist,
-                 lgi.packages=packages,
-                 debug=debug,prefix=fname
-                )
-  #lgi.call <- as.call(list(func, ...) )
-  #lgi.packages <- packages
-  #savelist <- c(savelist, "lgi.call", "lgi.packages")
-  #save(list=savelist, file=fname)
+  program <- lgi.prepareCall(func, ..., 
+                  global.savelist=global.savelist,
+                  function.savelist=function.savelist,
+                  lgi.packages=packages,
+                  debug=debug,prefix=fname
+                 )
 
   # and submit job
-  program <- lgi.bootPrep(file.prefix, FALSE)
-  files <- c(
-    file.path(.path.package("Rlgi"), 'runjob.R'), # TODO upload with other name?
-    paste(fname, "-GLOBAL", sep=''),
-    paste(fname, "-FUNCTION", sep='')
-  )
+  files <- c(paste(fname, "-GLOBAL", sep=''))
   result <- lgi.qsub(program, application, files[file.exists(files)])
   # we don't need these files anymore, they're uploaded anyway
-  if (getOption("lgi.remove.files")) {
+  if (as.logical(getOption("lgi.remove.files"))) {
     unlink(paste(fname, "-GLOBAL", sep=''))
-    unlink(paste(fname, "-FUNCTION", sep=''))
   }
 
   return(lgi.job.id(result))
@@ -65,8 +55,8 @@ lgi.result <- function(jobid, fname=NA) {
   }
   # now retrieve results file, get output, and remove file again
   lgi.file.get(lgi.job.repourl(jobinfo), fname)
-  result <- paste(readLines(fname), collapse="\n")
+  load(fname)
   if (as.logical(getOption("lgi.remove.files"))) unlink(fname)
-  return(result)
+  return(lgi.x.result)
 }
 
