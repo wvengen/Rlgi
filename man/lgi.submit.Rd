@@ -25,8 +25,7 @@ at should be imported. If \code{lgi.save.global} is set to TRUE, then this will 
  To set the global environment to be empty, use vector()}
   \item{function.savelist}{Character vector giving the variables to save from the local environment.
 Passing any arguments here will cause the function environment to be cleared. Passing a vector() will cause the local function to be empty.}
-  \item{packages}{List of library packages to be loaded by each worker
-    process before computation is started}
+  \item{packages}{List of library packages to be loaded by each worker process before computation is started}
   \item{debug}{Runs at debug level}
   \item{trace}{Runs at trace level}
   \item{file.prefix}{Prefix used to create data file}
@@ -38,8 +37,7 @@ Passing any arguments here will cause the function environment to be cleared. Pa
   of jobs; after the job is finished results can be retrieved using \code{lgi.result}.
 }
 \value{
-  Returns a list that has the named element filename for the name of the input file created to send commands to the SGE cluster and a named element jobid with the id of the job submitted.
-  list(jobid=JOBID, filename=FILENAME)
+  LGI job id submitted.
 }
  
 \author{Dan Bode \email{dbode@univaud.com}}

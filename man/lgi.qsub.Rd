@@ -7,7 +7,7 @@
 }
 
 \usage{
-lgi.qsub(rcode, application=getOption("lgi.application"), files=c(),
+lgi.qsub(rcode, application, files=c(),
           debug=getOption("lgi.debug"), trace=getOption("lgi.trace"))
 }
 \arguments{
@@ -25,10 +25,10 @@ lgi.qsub(rcode, application=getOption("lgi.application"), files=c(),
 \author{W. van Engen \email{wvengen@nikhef.nl}}
 
 \seealso{
-  \code{\link[Rlgi]{lgi.job.id}}
-  \code{\link[Rlgi]{lgi.job.status}}
-  \code{\link[Rlgi]{lgi.job.repourl}}
-  \code{\link[Rlgi]{lgi.qstat}}
+  \code{\link[Rlgi]{lgi.job.id}},
+  \code{\link[Rlgi]{lgi.job.status}},
+  \code{\link[Rlgi]{lgi.job.repourl}};
+  \code{\link[Rlgi]{lgi.qstat}}.
 }
 
 \keyword{interface}

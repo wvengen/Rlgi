@@ -6,8 +6,8 @@
 }
 
 \usage{
-lgi.get.result(jobid, fname=NA,
-               debug=getOption("lgi.debug"), trace=getOption("lgi.trace"))
+lgi.result(jobid, fname=NA,
+           debug=getOption("lgi.debug"), trace=getOption("lgi.trace"))
 }
 \arguments{
   \item{jobid}{Job id of the job whose results we are returning}

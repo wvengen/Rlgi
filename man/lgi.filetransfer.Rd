@@ -1,7 +1,7 @@
 \name{lgi.filetransfer}
 \alias{lgi.filetransfer}
-\alias{lgi.get}
-\alias{lgi.put}
+\alias{lgi.file.get}
+\alias{lgi.file.put}
 \title{Uploads or downloads files to an LGI repository}
 \description{
   LGI jobs usually retrieve files from their repository before starting, and
@@ -10,8 +10,8 @@
 
 \usage{
 lgi.filetransfer(action, repo, files, debug=getOption("lgi.debug"), trace=getOption("lgi.trace"))
-lgi.get(repo, files)
-lgi.put(repo, files)
+lgi.file.get(repo, files)
+lgi.file.put(repo, files)
 }
 \arguments{
   \item{action}{LGI_filetransfer action to execute ("download", "upload", "list" or "delete")}
@@ -24,9 +24,9 @@ lgi.put(repo, files)
   LGI filetransfer status XML.
 }
 \details{
-  \code{lgi.get} retrieves files from the repository and \code{lgi.put} stores them.
-  \code{lgi.filetransfer} is a direct wrapper for LGI_filetransfer. You shouldn't need
-  to use it directly.
+  \code{lgi.file.get} retrieves files from the repository and \code{lgi.file.put} stores
+  them. \code{lgi.filetransfer} is a direct wrapper for LGI_filetransfer. You shouldn't
+  need to use it directly.
 }
  
 \author{W. van Engen \email{wvengen@nikhef.nl}}

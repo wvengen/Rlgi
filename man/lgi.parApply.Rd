@@ -61,7 +61,7 @@
                global.savelist=NULL, function.savelist=NULL,
                debug=getOption("lgi.debug"),
                file.prefix=getOption('lgi.file.prefix'),
-               apply.method,
+               apply.method=2,
                application=getOption("lgi.application")
               )
 }
@@ -76,7 +76,7 @@
   \item{batch.size}{Number of rows to include in parallel job if njobs is excluded.}
   \item{global.savelist}{Character vector giving the names of variables from the global environemnt that should be imported. If lgi.save.global is set to TRUE, then this will clear the global environment. To set the global environment to be empty, use vector()}
   \item{function.savelist}{Character vector giving the variables to save from the local environment. <Passing a vector() will cause the local function to be empty, any value here will remove any non-listed values }
-  eitem{packages}{List of library packages to be loaded by each worker
+  \item{packages}{List of library packages to be loaded by each worker
     process before computation is started. }
   \item{cluster}{determines if the job should be submitted to the cluster or run locally (default:submit to cluster, TRUE)}
   \item{trace}{Prints some information about job submission. (TRUE|FALSE)}

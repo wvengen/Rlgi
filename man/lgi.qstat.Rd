@@ -22,10 +22,10 @@ lgi.qstat(jobid=NULL,
 \author{W. van Engen \email{wvengen@nikhef.nl}}
 
 \seealso{
-  \code{\link[Rlgi]{lgi.job.id}}
-  \code{\link[Rlgi]{lgi.job.status}}
-  \code{\link[Rlgi]{lgi.job.repourl}}
-  \code{\link[Rlgi]{lgi.qsub}}
+  \code{\link[Rlgi]{lgi.job.id}},
+  \code{\link[Rlgi]{lgi.job.status}};
+  \code{\link[Rlgi]{lgi.job.repourl}},
+  \code{\link[Rlgi]{lgi.qsub}}.
 }
 
 \keyword{interface}

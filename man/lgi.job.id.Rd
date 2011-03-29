@@ -7,10 +7,10 @@
 }
 
 \usage{
-lgi.job.id(result)
+lgi.job.id(xml)
 }
 \arguments{
-  \item{result}{Resulting output from LGI qsub or qstat call}
+  \item{xml}{Resulting output from LGI qsub or qstat call}
 }
 \value{
   integer id of job.
@@ -19,9 +19,9 @@ lgi.job.id(result)
 \author{W. van Engen \email{wvengen@nikhef.nl}}
 
 \seealso{
-  \code{\link[Rlgi]{lgi.job.status}}
-  \code{\link[Rlgi]{lgi.job.repourl}}
-  \code{\link[Rlgi]{lgi.qsub}}
-  \code{\link[Rlgi]{lgi.qstat}}
+  \code{\link[Rlgi]{lgi.job.status}},
+  \code{\link[Rlgi]{lgi.job.repourl}};
+  \code{\link[Rlgi]{lgi.qsub}},
+  \code{\link[Rlgi]{lgi.qstat}}.
 }
 \keyword{interface}
