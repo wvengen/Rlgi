@@ -10,7 +10,7 @@ echo $$ > LGI_running
 Rprog=
 R --version >/dev/null 2>&1 && Rprog=R
 # but maybe we need to load a module first
-if [ "${Rprog}" ] || module --version 2>&1|grep -q ^VERSION; then
+if [ ! "${Rprog}" ] && module --version 2>&1|grep -q ^VERSION; then
 	module load "${MODULENAME}"
 	R --version >/dev/null 2>&1 && Rprog=R
 fi
