@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# R detection script. See README for more information.
+#
+
+[ "${MODULENAME}" ] || MODULENAME=r
+
+# just make sure R is in PATH
+R --version >/dev/null 2>&1 && exit 0
+# but maybe we need to load a module first
+module --version 2>&1|grep -q ^VERSION && module -t avail "${MODULENAME}" 2>&1|grep -q -v ':$' && exit 0
+
+# oh no
+echo "Error: R not found, job rejected. Please install R." >/dev/stderr
+exit 2

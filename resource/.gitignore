@@ -1,0 +1,5 @@
+# ignore LGI resource daemon run-time files
+runhere
+LGI.cfg
+LGI.log
+LGI.pid

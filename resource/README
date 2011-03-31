@@ -1,0 +1,17 @@
+LGI resource daemon scripts for R
+---------------------------------
+
+To use Rlgi one needs LGI one or more resource daemons that execute R programs,
+and this directory contains an example configuration. Please refer to the LGI
+documentation for more information on setting up resource daemons.
+
+The scripts provided try to run the default 'R' application. If the program
+`module` is installed, the corresponding module(*) is loaded.
+
+When R is not found, a message is printed on stderr and the job is
+rejected, so that another resource daemon might pick it up.
+
+
+(*) See http://modules.sourceforge.net/ for the modules system. You
+    may need to set MODULENAME and MODULEPATH in your resource
+    daemon run script (and don't forget to export them).

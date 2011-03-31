@@ -1,0 +1,12 @@
+#!/bin/sh
+if [ -f LGI_running ]
+then
+ exit 1 
+else
+ if [ -f LGI_finished ]
+ then
+  exit 0
+ else
+  exit 1
+ fi
+fi

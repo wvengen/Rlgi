@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# R run script. See also job_check_limits_script and README.
+#
+echo $$ > LGI_running
+
+[ "${MODULENAME}" ] || MODULENAME=r
+
+# locate R
+Rprog=
+R --version >/dev/null 2>&1 && Rprog=R
+# but maybe we need to load a module first
+if [ "${Rprog}" ] || module --version 2>&1|grep -q ^VERSION; then
+	module load "${MODULENAME}"
+	R --version >/dev/null 2>&1 && Rprog=R
+fi
+
+if [ ! "${Rprog}" ]; then
+	# No R. Shouldn't happen since job_check_limits_script should have
+	#   checked this already.
+	echo "Error: R not found; strange since check_limits already checked this. Please contact the Rlgi developers." >/dev/stderr
+	exit 2
+fi
+
+# and run R
+"${Rprog}" -q --no-save <LGI_input >LGI_output 2>&1
+
+touch LGI_finished
+rm LGI_running

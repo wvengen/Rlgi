@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# fetch all files from repository
+repository=`xml -i LGI_job_specifics repository_url`
+if [ "$repository" ]; then
+	# Since LGI provides no real xml utilities, we have to do some xml
+	#   parsing ourselves. This is not something to be copied, don't try
+	#   this at home!
+	# Don't download anything starting with "LGI" to avoid overwriting
+	#   files that the resource daemon uses; ".LGI_*" files may be
+	#   used by the project server and are not useful here.
+	LGI_filetransfer -x -j . list "$repository" | \
+		xml repository_content | \
+		sed 's/\(<file\)/\n\1/g' | \
+		sed 's/^<file name="\(.*\)\">.*$/\1/p;d' | \
+		grep -v '^.\?LGI' | \
+		xargs LGI_filetransfer -j . download "$repository"
+fi
+
+exit 0
