@@ -1,7 +1,7 @@
 Package: Rlgi
 Title: Interface to the Leiden Grid Infrastructure
-Date: 2011-03-30
-Version: 0.0.5
+Date: 2011-03-31
+Version: 0.0.6
 Author: Willem van Engen <wvengen@nikhef.nl>
 Description: This package provides functions for using R with the 
         Leiden Grid Infrastructure distributed computing system.
