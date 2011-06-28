@@ -55,4 +55,30 @@ Configuration:
 -------
 For more on global configuration, see help(lgi.options)
 
-$Id$
+Example session
+-------
+  > library(Rlgi)
+  Loading required package: snow
+  Loading required package: XML
+  Welcome to Rlgi
+      Version: 0.0.6
+
+  > # set defaults, when needed
+  > options(lgi.application='R-2.12')
+
+  > # non-cluster-aware call
+  > sapply(c(10:20), function(x){x^3})
+   [1] 1000 1331 1728 2197 2744 3375 4096 4913 5832 6859 8000
+
+  > # use Rlgi's function to do sapply, but run locally for testing
+  > lgi.parSapply(c(10:20), function(x){x^3}, cluster=FALSE)
+  [Rlgi] Running locally
+   [1] 1000 1331 1728 2197 2744 3375 4096 4913 5832 6859 8000
+
+  > # now run remotely, blocking until all computations are finished
+  > lgi.parSapply(c(10:20), function(x){x^3})
+  [Rlgi] Submitting 1 jobs...
+  [Rlgi] All jobs submitted, waiting for completion.
+  [Rlgi] Waiting for jobs:   0 queued;    0 running;   1 other      
+   [1] 1000 1331 1728 2197 2744 3375 4096 4913 5832 6859 8000
+
