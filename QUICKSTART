@@ -1,6 +1,11 @@
 Quickstart for RLGI
 ------
 
+This is a short tutorial on how to get started with the RLGI R package as a
+user. You need an administrator who has setup an LGI project server with R,
+and who has given you a certificate for the project server.
+
+
  1. Install LGI client tools
     for now you need to grab the sources from
       http://gliteui.wks.gorlaeus.net/LGI/LGI.tar.gz
