@@ -1,0 +1,82 @@
+Quickstart for RLGI
+------
+
+ 1. Install LGI client tools
+    for now you need to grab the sources from
+      http://gliteui.wks.gorlaeus.net/LGI/LGI.tar.gz
+    compile the tools in LGI_x.xx/src and install them in your PATH.
+    You need to have a libcurl development package installed.
+
+ 2. Setup your LGI configuration in ~/.LGI using these files:
+      defaultserver    LGI project server you use
+      defaultproject   LGI project you use
+      user             your LGI username
+      groups           groups you want to associate jobs with
+      ca_chain         PEM-encoded certificate chain of certificate authority
+      certificate      PEM-encoded certificate of your LGI account
+      privatekey       PEM-encoded private key of your LGI account
+
+ 3. Install the RLGI package for R
+    download the source from https://github.com/wvengen/Rlgi/tarball/Rlgi_0.0.6
+    or when feeling experimental https://github.com/wvengen/Rlgi/tarball/master
+
+ 4. Start!
+
+
+For example:
+  $ #### Step 1: Instal LGI client tools ####
+  $ cd /tmp
+  $ wget http://gliteui.wks.gorlaeus.net/LGI/LGI.tar.gz
+  Resolving gliteui.wks.gorlaeus.net... 132.229.173.168
+  Connecting to gliteui.wks.gorlaeus.net|132.229.173.168|:80... connected.
+  HTTP request sent, awaiting response... 200 OK
+  Length: 2278708 (2.2M) [application/x-gzip]
+  Saving to: `LGI.tar.gz'
+  100%[===================================>] 2,278,708   11.3M/s   in 0.2s    
+  (11.3 MB/s) - `LGI.tar.gz' saved [2278708/2278708]
+  $ tar xzf LGI.tar.gz
+  $ cd LGI_?.??/src
+  $ make
+  g++ -O2 -c logger.cpp
+  g++ -O2 -c resource_server_api.cpp
+  g++ -O2 -c xml.cpp
+  g++ -O2 -c csv.cpp
+  g++ -O2 -c hash.cpp
+  (...)
+  $ export PATH=$PATH:`pwd`
+
+  $ #### Step 2: Setup LGI client configuration ####
+  $ mkdir -p ~/.LGI && cd ~/.LGI
+  $ echo https://change.my.cool.project.server/LGI >defaultserver
+  $ echo change.LGIproject >defaultproject
+  $ cat /change/some/ca/chain.pem >ca_chain
+  $ openssl pkcs12 -clcerts -nokeys -in /change/my/received/cert.p12 -out certificate
+  $ openssl pkcs12 -nocerts -in /change/my/received/cert.p12 -out privatekey
+  $ chmod 0600 privatekey
+  $ openssl x509 -noout -subject -in certificate | sed 's/^.*CN=\([^;]\+\)\(;.*\)\?$/\1/' >user
+  $ cat user >groups
+  $ LGI_qstat -cnt
+  Number of jobs found  : 0
+  (...)
+
+  $ #### Step 3: Install RLGI package ####
+  $ cd /tmp
+  $ wget https://github.com/wvengen/Rlgi/tarball/Rlgi_0.0.6
+  $ tar xzf Rlgi_?.?.?
+  $ R CMD INSTALL *-Rlgi-*
+
+  $ #### Step 4: Start! ####
+  $ R
+  > library(Rlgi)
+  Loading required package: snow
+  Loading required package: XML
+  Welcome to Rlgi
+      Version: 0.0.6 
+  > options(lgi.application='change_the_R_application')
+  > lgi.parSapply(c(10:20), function(x){x^3})
+  [Rlgi] Submitting 1 jobs...
+  [Rlgi] All jobs submitted, waiting for completion.
+  [Rlgi] Waiting for jobs:   0 queued;    0 running;   1 other      
+   [1] 1000 1331 1728 2197 2744 3375 4096 4913 5832 6859 8000
+  >
+  
