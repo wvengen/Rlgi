@@ -15,6 +15,10 @@ The program functions as follows:
 
 (lgi.submit is similar, but does not split data and is asynchronous)
 
+
+IMPORTANT NOTE: This is no more than a prototype version that works with simple cases. Someone with some R knowledge should probably make it more robust (large datasets, for example).
+
+
 LICENSE
 ------
 This code is licensed under GPL, use it, modify it, change it, but most of all, enjoy it.
@@ -40,7 +44,7 @@ configuration is setup in ~/.LGI.
   
   ComputeNode
     - R, RLGI, and snow should be installed
-    - Other packages may be required if you use the “packages” option
+    - Other packages may be required if you use the "packages" option
 
 Usage
 ------
