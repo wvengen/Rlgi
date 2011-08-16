@@ -6,22 +6,24 @@
 #
 lgi.setDefaultOptions <- function() {
   # user variables, feel free to change for more info help(lgi.options)
+  #default LGI server to contact
+  options(lgi.server="https://example.com/LGI")
+  # default project to use on server
+  options(lgi.project="helloworld")
+  #default application to submit to
+  options(lgi.application="R") # TODO use NULL as default; add checking somewhere
+  # default certificate authority to check LGI server against
+  options(lgi.cacert=path.expand('~/.LGI/ca_chain'))
+  # default certificate for authentication with LGI server
+  options(lgi.usercert=path.expand('~/.LGI/certificate'))
+  # default key for authentication with LGI server
+  options(lgi.userkey=path.expand('~/.LGI/privatekey'))
   #if the cluster should be used or if it should be run locally.
   options(lgi.use.cluster="TRUE")
   # default number of elements per split
   options(lgi.block.size=100)
   #prefix for data files
   options(lgi.file.prefix="Rlgi_data")
-  #path for qsub
-  options(lgi.qsub="LGI_qsub")
-  #path for qstat
-  options(lgi.qstat="LGI_qstat")
-  #path for filetransfer
-  options(lgi.filetransfer="LGI_filetransfer")
-  #default application to submit to
-  options(lgi.application="R") # TODO use NULL as default; add checking somewhere
-  #user options for lgi
-  options(lgi.user.options="")
   #should the files be removed afterwards (data files and LGI output files)
   options(lgi.remove.files=TRUE)
   #logging levels, this could be replaced by something more useful
@@ -29,11 +31,6 @@ lgi.setDefaultOptions <- function() {
   options(lgi.trace=FALSE)
   # should we save the global environment by default.
   options(lgi.save.global=FALSE)
-  # global variables that should not be changed, or should be changed very carefully. 
-  options(lgi.qsub.options="-x -i /dev/stdin")
-  options(lgi.qstat.options="-x")
-  options(lgi.filetransfer.options="-x")
-  #options(lgi.pipe="| fold -w 4000") # avoid R warning "may be truncated in call to system"; may break stuff
 }
 
 lgi.options <- function(...) {
