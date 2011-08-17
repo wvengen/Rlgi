@@ -16,35 +16,22 @@ lgi.split <- function (x, ncl) {
 
 # POSTs an HTTPS request to the LGI project server
 lgi.request <- function(apipath, variables=c(), files=c(), path=NA, debug=getOption("lgi.debug"), trace=getOption("lgi.trace")) {
-  # TODO create connection if not available so we can reuse it
-  mimeboundary = '@$_Th1s_1s_th3_b0und@ry_@$'
-  data <- paste(c(
-      sapply(names(variables), function(name) c(
-        paste('--', mimeboundary,  sep=''),
-        paste('Content-Disposition: form-data; name="', name, '"',  sep=''),
-	'',
-	variables[[name]]
-      )),
-      sapply(names(files), function(name) c(
-        paste('--', mimeboundary,  sep=''),
-        paste('Content-Disposition: form-data; name="', name, '"; filename="', files[[name]][[1]], '"',  sep=''),
-	'',
-	files[[name]][[2]]
-      )),
-      paste('--', mimeboundary, '--',  sep=''),
-      ''
-    ), collapse='\r\n')
+  data <- as.list(variables)
+  if (length(files)>0) {
+    for (i in 1:length(files)) {
+      data[[paste('uploaded_file_',i,sep='')]] = fileUpload(files[i])
+    }
+  }
   headers <- c(
-    'Content-Type' = paste('multipart/form-data; boundary=', mimeboundary,  sep=''),
     'Accept' = 'text/plain',
-    'Connection' = 'keep-alive'
+    'Connection' = 'keep-alive' # TODO
   )
   if (is.na(path)) path <- paste(getOption("lgi.server"), '/', apipath,  sep='')
-  return(getURL(path, postfields=data, httpheader=headers,
-    customrequest='POST',
+  return(postForm(path, .params=data, style='httppost', .opts=list(
     cainfo=getOption("lgi.cacert"),
     sslcert=getOption("lgi.certificate"),
-    sslkey=getOption("lgi.privatekey")))
+    sslkey=getOption("lgi.privatekey")
+  )))
 }
 
 # return XML document containing job information
@@ -90,13 +77,7 @@ lgi.qsub <- function(rcode, application, files=c(), targetResources='any', write
     'input' = lgi.binhex(rcode),
     'number_of_uploaded_files' = length(files)
   ))
-  # read files (must all fit in memory!)
-  filesc = c()
-  for (fname in files) {
-    fdata = readBin(fname, what='raw', n=file.info(fname)$size)
-    filesc[[paste('uploaded_file_', length(filesc)+1, sep='')]] = c(fname, fdata)
-  }
-  result <- lgi.request('/interfaces/interface_submit_job.php', args, filesc)
+  result <- lgi.request('/interfaces/interface_submit_job.php', args, files)
   # parse output
   result <- xmlRoot(xmlTreeParse(result, asText=TRUE))
   result <- result[["response"]]
