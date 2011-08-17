@@ -6,18 +6,22 @@
 #
 lgi.setDefaultOptions <- function() {
   # user variables, feel free to change for more info help(lgi.options)
-  #default LGI server to contact
-  options(lgi.server="https://example.com/LGI")
-  # default project to use on server
-  options(lgi.project="helloworld")
+  #LGI server to contact
+  options(lgi.server=lgi.getLGIConfig('defaultserver', 'https://example.com/LGI/'))
+  #project to use on server
+  options(lgi.project=lgi.getLGIConfig('defaultproject', 'helloworld'))
   #default application to submit to
   options(lgi.application="R") # TODO use NULL as default; add checking somewhere
-  # default certificate authority to check LGI server against
+  #certificate authority to check LGI server against
   options(lgi.cacert=path.expand('~/.LGI/ca_chain'))
-  # default certificate for authentication with LGI server
-  options(lgi.usercert=path.expand('~/.LGI/certificate'))
-  # default key for authentication with LGI server
-  options(lgi.userkey=path.expand('~/.LGI/privatekey'))
+  #certificate for authentication with LGI server
+  options(lgi.certificate=path.expand('~/.LGI/certificate'))
+  #key for authentication with LGI server
+  options(lgi.privatekey=path.expand('~/.LGI/privatekey'))
+  #LGI user (this could have been autodetected if there were openssl on CRAN)
+  options(lgi.user=lgi.getLGIConfig('user', NA))
+  #LGI groups
+  options(lgi.groups=lgi.getLGIConfig('groups', NA))
   #if the cluster should be used or if it should be run locally.
   options(lgi.use.cluster="TRUE")
   # default number of elements per split
@@ -38,4 +42,10 @@ lgi.options <- function(...) {
 }
 lgi.getOption <- function(...) {
   getOption(...)
+}
+# read LGI configuration file, or use default if file doesn't exist
+lgi.getLGIConfig <- function(name, default) {
+  filename <- path.expand(paste('~/.LGI/', name, sep=''))
+  if (!file.exists(filename)) return (default)
+  return(scan(filename, '', quiet=TRUE))
 }

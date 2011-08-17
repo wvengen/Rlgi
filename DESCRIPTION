@@ -5,7 +5,7 @@ Version: 0.0.6
 Author: Willem van Engen <wvengen@nikhef.nl>
 Description: This package provides functions for using R with the 
         Leiden Grid Infrastructure distributed computing system.
-Depends: snow, XML
+Depends: snow, RCurl, XML
 SystemRequirements: Requires LGI (LGI_qsub, LGI_qstat, LGI_filetransfer)
 Maintainer: Willem van Engen <wvengen@nikhef.nl>
 License: GPL
