@@ -31,31 +31,12 @@ lgi.setDefaultOptions()
      Prefix to be used for data and return files. Default is \code{Rlgi\_data}.
    \code{lgi.application}
      LGI application to submit to. Default is "R", though this may differ in your setup.
-   \code{lgi.qsub}
-     qsub program to call. Default assumes that LGI_qsub is in the path. Change this if it is not.
-   \code{lgi.qstat}
-     qstat program to call. Default assumes that LGI_qstat is in the path. Change this if it is not. 
-   \code{lgi.filetransfer}
-     filetransfer program to call. Default assumes that LGI_filetransfer is in the path. Change this if it is not. 
-   \code{lgi.user.options}
-     user options to be passed to qsub, change this if you want to e.g. to modify the default username or LGI configuration directory.
    \code{lgi.remove.files}
      Specifies if generated files should be removed after execution. Default is TRUE. 
    \code{lgi.debug}
      If set to TRUE, then the program will run on debug mode. Default is FALSE.
    \code{lgi.trace}
      If set to TRUE, some status information will be showed. Default is TRUE. 
-
-  The following were included as parameters for the developers, but not currently supported. It is recommended that they are not changed unless the user had read the code and understands the implications of the changes.
-
-   \code{lgi.qsub.options}
-     options to be passed to qsub. Default is "-x -i /dev/stdin", which are mandatory.
-   \code{lgi.qstat.options}
-     options to be passed to qstat. Default is "-x", which is mandatory.
-   \code{lgi.filetransfer}
-     options to be passed to filetransfer. Default is "-x", which is mandatory.
-   \code{lgi.pipe}
-     command to paste after qsub, qstat and filetransfer commands, e.g. to filter using pipes. Default is none.
 }
 \value{
   no return.

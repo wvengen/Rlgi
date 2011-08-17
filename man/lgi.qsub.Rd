@@ -13,7 +13,7 @@ lgi.qsub(rcode, application, files=c(),
 \arguments{
   \item{rcode}{R function to execute on LGI cluster}
   \item{application}{LGI application for running R programs}
-  \item{files}{files to upload before running the R job remotely}
+  \item{files}{paths of files to upload before running the R job remotely}
   \item{debug}{Runs at debug level}
   \item{trace}{Runs at trace level}
 }
