@@ -15,7 +15,7 @@ lgi.split <- function (x, ncl) {
 }
 
 # POSTs an HTTPS request to the LGI project server
-lgi.request <- function(apipath, variables=c(), files=c(), path=NA, debug=getOption("lgi.debug")) {
+lgi.request <- function(apipath, variables=c(), files=c(), path=NA, trace=getOption("lgi.trace")) {
   data <- as.list(variables)
   if (length(files)>0) {
     for (i in 1:length(files)) {
@@ -31,19 +31,19 @@ lgi.request <- function(apipath, variables=c(), files=c(), path=NA, debug=getOpt
     cainfo=getOption("lgi.cacert"),
     sslcert=getOption("lgi.certificate"),
     sslkey=getOption("lgi.privatekey"),
-    verbose=as.logical(debug)
+    verbose=as.logical(trace)
   )))
 }
 
 # return XML document containing job information
-lgi.qstat <- function(jobid=NULL, debug=getOption("lgi.debug")) {
+lgi.qstat <- function(jobid=NULL, trace=getOption("lgi.trace")) {
   args <- c(
     'project' = getOption('lgi.project'),
     'user' = getOption('lgi.user'),
     'groups' = getOption('lgi.groups'),
     'job_id' = jobid
   )
-  result <- lgi.request('/interfaces/interface_job_state.php', args, debug=debug)
+  result <- lgi.request('/interfaces/interface_job_state.php', args, trace=trace)
   result <- xmlRoot(xmlTreeParse(result, asText=TRUE))
   result <- result[["response"]]
   if (!is.null(result[["error"]])) stop(xmlValue(result[["error"]][["message"]]))
@@ -66,7 +66,7 @@ lgi.job.repourl <- function(xml) {
 }
 
 # submit LGI job directly, return XML node containing job information
-lgi.qsub <- function(rcode, application, files=c(), targetResources='any', writeAccess=NA, readAccess=NA, debug=getOption("lgi.debug")) {
+lgi.qsub <- function(rcode, application, files=c(), targetResources='any', writeAccess=NA, readAccess=NA, trace=getOption("lgi.trace")) {
   args <- na.omit(c(
     'project' = getOption('lgi.project'),
     'user' = getOption('lgi.user'),
@@ -78,7 +78,7 @@ lgi.qsub <- function(rcode, application, files=c(), targetResources='any', write
     'input' = lgi.binhex(rcode),
     'number_of_uploaded_files' = length(files)
   ))
-  result <- lgi.request('/interfaces/interface_submit_job.php', args, files, debug=debug)
+  result <- lgi.request('/interfaces/interface_submit_job.php', args, files, trace=trace)
   # parse output
   result <- xmlRoot(xmlTreeParse(result, asText=TRUE))
   result <- result[["response"]]
@@ -87,20 +87,20 @@ lgi.qsub <- function(rcode, application, files=c(), targetResources='any', write
 }
 
 # retrieve filenames from repository to current directory
-lgi.file.get <- function(repo, files, debug=getOption('lgi.debug')) {
+lgi.file.get <- function(repo, files, trace=getOption('lgi.trace')) {
   for (fn in files) {
     result <- curlPerform(.opts=c(URL=paste(repo, fn,  sep='/'),
       file=CFILE(fn, mode='wb')@ref,
       cainfo=getOption("lgi.cacert"),
       sslcert=getOption("lgi.certificate"),
       sslkey=getOption("lgi.privatekey"),
-      verbose=as.logical(debug)
+      verbose=as.logical(trace)
     ))
   }
 }
 
 # upload files to repository
-lgi.file.put <- function(repo, files, debug=getOption('lgi.debug')) {
+lgi.file.put <- function(repo, files, trace=getOption('lgi.trace')) {
   for (fn in files) {
     result <- curlPerform(url=paste(repo, basename(fn),  sep='/'),
       upload=TRUE,
@@ -109,13 +109,13 @@ lgi.file.put <- function(repo, files, debug=getOption('lgi.debug')) {
       cainfo=getOption("lgi.cacert"),
       sslcert=getOption("lgi.certificate"),
       sslkey=getOption("lgi.privatekey"),
-      verbose=as.logical(debug)
+      verbose=as.logical(trace)
     )
   }
 }
 
 # list files in repository
-lgi.file.list <- function(repo, debug=getOption('lgi.debug')) {
+lgi.file.list <- function(repo, trace=getOption('lgi.trace')) {
   # parse components of url
   server <- sub('[^/]+$', '', repo)
   dir <- sub('^.*/', '', repo)
@@ -124,7 +124,7 @@ lgi.file.list <- function(repo, debug=getOption('lgi.debug')) {
     cainfo=getOption("lgi.cacert"),
     sslcert=getOption("lgi.certificate"),
     sslkey=getOption("lgi.privatekey"),
-    verbose=as.logical(debug)
+    verbose=as.logical(trace)
   )
   # return result
   result <- xmlRoot(xmlTreeParse(result, asText=TRUE))
