@@ -30,8 +30,8 @@ lgi.setDefaultOptions <- function() {
   options(lgi.file.prefix="Rlgi_data")
   #should the files be removed afterwards (data files and LGI output files)
   options(lgi.remove.files=TRUE)
-  #logging levels, this could be replaced by something more useful
-  options(lgi.debug=TRUE)
+  #logging levels
+  options(lgi.debug=FALSE)
   options(lgi.trace=FALSE)
   # should we save the global environment by default.
   options(lgi.save.global=FALSE)
