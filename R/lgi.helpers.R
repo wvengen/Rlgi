@@ -86,16 +86,21 @@ lgi.qsub <- function(rcode, application, files=c(), targetResources='any', write
   return(result)
 }
 
-# retrieve filenames from repository to current directory
+# retrieve filenames from repository to current directory (reads full file into memory)
 lgi.file.get <- function(repo, files, trace=getOption('lgi.trace')) {
   for (fn in files) {
-    result <- curlPerform(.opts=c(URL=paste(repo, fn,  sep='/'),
-      file=CFILE(fn, mode='wb')@ref,
+    # I've tried using curlPerform with file=CFILE(fn, mode='wb')@ref
+    # but the last chunck would not be written until R exit and I've
+    # found no way to close the CFILE.
+    content <- getBinaryURL(paste(repo, fn,  sep='/'),
       cainfo=getOption("lgi.cacert"),
       sslcert=getOption("lgi.certificate"),
       sslkey=getOption("lgi.privatekey"),
       verbose=as.logical(trace)
-    ))
+    )
+    f = file(fn, 'wb')
+    writeBin(content, f)
+    close(f)
   }
 }
 
