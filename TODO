@@ -1,11 +1,9 @@
 
-- implement lgi.use.cluster
 - try to make lgi.par?apply always work when R's ?apply works (result merging)
 - report all statuses in lgi.parParApply
 - show error messages and warnings from remote workers
 - error handling when one job fails
 - allow to fetch results when parallel submission wait was interrupted
-- fix warning "line * may be truncated in call to system(, intern = TRUE)"
 - local computation if remote takes too long
 - add option to delete LGI jobs when result is safe
 - write examples
@@ -14,6 +12,6 @@
 performance improvements:
 - use shared GLOBAL/FUNCTION repository for parApply, generate only once
 - remember results filename somehow so qstat isn't needed when fetching results
-- access LGI via https directly instead of LGI_* utilities to reuse ssl handshake
+- reuse curl connection to decrease ssl handshake overhead
 - add batch/arrayjob submission to LGI
 

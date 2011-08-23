@@ -21,6 +21,22 @@ lgi.setDefaultOptions()
 
  The global parameters are:
 
+   \code{lgi.server}
+     LGI project server to contact. Default is read from \code{~/.LGI/defaultserver}.
+   \code{lgi.project}
+     LGI project to use on server. Default is read from \code{~/.LGI/defaultproject}.
+   \code{lgi.application}
+     LGI application to submit to. Default is \code{R}.
+   \code{lgi.cacert}
+     LGI CA certificate to verify server (PEM). Default is \code{~/.LGI/ca_chain}.
+   \code{lgi.certificate}
+     LGI user certificate to authenticate with (PEM). Default is \code{~/.LGI/certificate}.
+   \code{lgi.privatekey}
+     LGI user key to authenticate with (PEM). Default is \code{~/.LGI/privatekey}.
+   \code{lgi.user}
+     LGI username. Default is read from \code{~/.LGI/user}.
+   \code{lgi.groups}
+     LGI groups to submit jobs with. Default is read from \code{~/.LGI/groups}.
    \code{lgi.save.global}
      Should the global environment be saved by default? Default is TRUE (this may change in future versions)
    \code{lgi.use.cluster}

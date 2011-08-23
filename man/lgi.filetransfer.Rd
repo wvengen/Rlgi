@@ -9,24 +9,21 @@
 }
 
 \usage{
-lgi.filetransfer(action, repo, files, debug=getOption("lgi.debug"), trace=getOption("lgi.trace"))
-lgi.file.get(repo, files)
-lgi.file.put(repo, files)
+lgi.file.get(repo, files, trace=getOption('lgi.trace'))
+lgi.file.put(repo, files, trace=getOption('lgi.trace'))
+lgi.file.list(repo)
 }
 \arguments{
-  \item{action}{LGI_filetransfer action to execute ("download", "upload", "list" or "delete")}
-  \item{repo}{Repository to access, can be obtained by \code{lgi.job.repourl}}
+  \item{repo}{Repository to access, can be obtained by \code{lgi.job.repourl}; no trailing slash}
   \item{files}{List of files to operate on}
-  \item{debug}{Runs at debug level}
   \item{trace}{Runs at trace level}
 }
 \value{
-  LGI filetransfer status XML.
+  For \code{lgi.file.list} a named list is returned with filenames and size and timestamp of each.
 }
 \details{
   \code{lgi.file.get} retrieves files from the repository and \code{lgi.file.put} stores
-  them. \code{lgi.filetransfer} is a direct wrapper for LGI_filetransfer. You shouldn't
-  need to use it directly.
+  them. \code{lgi.file.list} returns the files that are available in the repository.
 }
  
 \author{W. van Engen \email{wvengen@nikhef.nl}}
