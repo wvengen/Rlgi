@@ -35,6 +35,9 @@ lgi.setDefaultOptions <- function() {
   options(lgi.trace=FALSE)
   # should we save the global environment by default.
   options(lgi.save.global=FALSE)
+
+  # now read single-file configuration for easy setup by one file
+  lgi.readConfig()
 }
 
 lgi.options <- function(...) {
@@ -43,9 +46,33 @@ lgi.options <- function(...) {
 lgi.getOption <- function(...) {
   getOption(...)
 }
-# read LGI configuration file, or use default if file doesn't exist
+# read configuration file in ~/.LGI, or use default if file doesn't exist
 lgi.getLGIConfig <- function(name, default) {
   filename <- path.expand(paste('~/.LGI/', name, sep=''))
   if (!file.exists(filename)) return (default)
   return(scan(filename, '', quiet=TRUE))
+}
+# read settings from single configuration file
+lgi.readConfig <- function(filename=path.expand('~/LGI.cfg')) {
+  if (!file.exists(filename)) return(FALSE)
+  mapping = c( # fields to read from configuration
+    lgi.server='defaultserver',
+    lgi.project='defaultproject',
+    lgi.application='defaultapplication',
+    lgi.user='user',
+    lgi.groups='groups'
+  )
+  cfg = xmlRoot(xmlTreeParse(filename))
+  if (xmlName(cfg)!='LGI_user_config')
+    stop('Malformed LGI user configuration file (root element)')
+  # set variables
+  options(as.list(na.omit(sapply(mapping, function(x){ xmlValue(cfg[[x]]) }))))
+  # when certificate/key options exist, use file as variable
+  if (!is.na(xmlValue(cfg[['ca_chain']])))
+    options(lgi.cacert=filename)
+  if (!is.na(xmlValue(cfg[['certificate']])))
+    options(lgi.certificate=filename)
+  if (!is.na(xmlValue(cfg[['privatekey']])))
+    options(lgi.privatekey=filename)
+  return(TRUE)
 }
