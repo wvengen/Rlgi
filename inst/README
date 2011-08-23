@@ -25,18 +25,18 @@ This code is licensed under GPL, use it, modify it, change it, but most of all, 
 
 INSTALLATION
 ------
-To install this package, first ensure that snow if installed, then run the following. 
+To install this package, first ensure that snow and RCurl are installed, then run the following. 
 
 R CMD INSTALL Rlgi
 
-This package requires that the LGI user configuration is setup in ~/.LGI.
+This package requires that the LGI user configuration is setup in ~/LGI.cfg or ~/.LGI. Please refer to QUICKSTART and the documentation for lgi.readConfig() for more information.
 
   Nodes where this package is installed are referred to as submit nodes.
   Nodes where this package will distribute data for computation are referred to as compute nodes.
 
   SubmitNode:
     - LGI should be configured
-      - certificate and project settings should be configured in ~/.LGI,
+      - certificate and project settings should be configured in ~/LGI.cfg or ~/.LGI,
         or the LGI-related Rlgi options should be set
     - R (tested with 2.6.1/2.7, may work with other versions)
     - R packages snow, RCurl and Rlgi installed.

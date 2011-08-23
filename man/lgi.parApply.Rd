@@ -105,7 +105,6 @@ Returns an object whose type is determined by the join.method. This object shoul
 }
 
 \author{Dan Bode \email{dbode@univaud.com}}
-\author{W. van Engen \email{wvengen@nikhef.nl}}
 \examples{
 \dontrun{  
  # there are tons of examples (actually my crude unit tests)

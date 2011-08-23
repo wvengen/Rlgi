@@ -30,7 +30,6 @@ lgi.result(jobid, fname=NA,
   Returns results from the worker processes.
 }
  
-\author{Dan Bode \email{dbode@univaud.com}}
 \author{W. van Engen \email{wvengen@nikhef.nl}}
 
 \seealso{

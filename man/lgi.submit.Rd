@@ -40,7 +40,6 @@ Passing any arguments here will cause the function environment to be cleared. Pa
   LGI job id submitted.
 }
  
-\author{Dan Bode \email{dbode@univaud.com}}
 \author{W. van Engen \email{wvengen@nikhef.nl}}
 
 \seealso{

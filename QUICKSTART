@@ -1,11 +1,15 @@
-Quickstart for RLGI
+Quickstart for Rlgi
 ------
 
 This is a short tutorial on how to get started with the RLGI R package as a
 user. You need an administrator who has setup an LGI project server with R,
 and who has given you a certificate for the project server.
 
- 1. Setup your LGI configuration in ~/.LGI using these files:
+ 1. Setup your LGI configuration. When you have received an LGI.cfg from your
+    system administrator, put that into your home directory. On Windows, this
+    may be your personal "Documents and Settings" directory.
+    If you don't have a pre-cooked configuration file, populate ~/.LGI with
+    the following files:
       defaultserver    LGI project server you use
       defaultproject   LGI project you use
       user             your LGI username
@@ -24,6 +28,7 @@ and who has given you a certificate for the project server.
 For example:
 
   $ #### Step 1: Setup LGI client configuration ####
+  $ # (without pre-cooked LGI.cfg configuration file)
   $ mkdir -p ~/.LGI && cd ~/.LGI
   $ echo https://change.my.cool.project.server/LGI >defaultserver
   $ echo change.LGIproject >defaultproject
@@ -33,9 +38,6 @@ For example:
   $ chmod 0600 privatekey
   $ openssl x509 -noout -subject -in certificate | sed 's/^.*CN=\([^;]\+\)\(;.*\)\?$/\1/' >user
   $ cat user >groups
-  $ LGI_qstat -cnt
-  Number of jobs found  : 0
-  (...)
 
   $ #### Step 2: Install RLGI package ####
   $ cd /tmp
@@ -50,7 +52,7 @@ For example:
   Loading required package: XML
   Welcome to Rlgi
       Version: 0.0.7 
-  > options(lgi.application='change_the_R_application')
+  > options(lgi.application='R') # change appropriately, skip if LGI.cfg
   > lgi.parSapply(c(10:20), function(x){x^3})
   [Rlgi] Submitting 1 jobs...
   [Rlgi] All jobs submitted, waiting for completion.
