@@ -18,7 +18,8 @@ and who has given you a certificate for the project server.
       certificate      PEM-encoded certificate of your LGI account
       privatekey       PEM-encoded private key of your LGI account
 
- 2. Install the RLGI package for R
+ 2. Install the Rlgi package for R
+    you may need to install the dependencies: bitops, snow, XML and RCurl
     download the source from https://github.com/wvengen/Rlgi/tarball/Rlgi_0.0.7
     or when feeling experimental https://github.com/wvengen/Rlgi/tarball/master
 
@@ -39,7 +40,7 @@ For example:
   $ openssl x509 -noout -subject -in certificate | sed 's/^.*CN=\([^;]\+\)\(;.*\)\?$/\1/' >user
   $ cat user >groups
 
-  $ #### Step 2: Install RLGI package ####
+  $ #### Step 2: Install Rlgi package ####
   $ cd /tmp
   $ wget https://github.com/wvengen/Rlgi/tarball/Rlgi_0.0.7
   $ tar xzf Rlgi_?.?.?
