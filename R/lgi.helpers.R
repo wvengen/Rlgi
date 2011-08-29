@@ -14,6 +14,18 @@ lgi.split <- function (x, ncl) {
   }
 }
 
+# create a new Curl handle or return an existing one
+lgi.curl.getHandle <- function() {
+  if (!exists('lgi.curl.handle')) {
+    assign('lgi.curl.handle', getCurlHandle(
+      cainfo=getOption("lgi.cacert"),
+      sslcert=getOption("lgi.certificate"),
+      sslkey=getOption("lgi.privatekey")
+    ), envir=.GlobalEnv)
+  }
+  return(lgi.curl.handle)
+}
+
 # POSTs an HTTPS request to the LGI project server
 lgi.request <- function(apipath, variables=c(), files=c(), path=NA, trace=getOption("lgi.trace")) {
   data <- as.list(variables)
@@ -24,13 +36,10 @@ lgi.request <- function(apipath, variables=c(), files=c(), path=NA, trace=getOpt
   }
   headers <- c(
     'Accept' = 'text/plain',
-    'Connection' = 'keep-alive' # TODO
+    'Connection' = 'keep-alive'
   )
   if (is.na(path)) path <- paste(getOption("lgi.server"), '/', apipath,  sep='')
-  return(postForm(path, .params=data, style='httppost', .opts=list(
-    cainfo=getOption("lgi.cacert"),
-    sslcert=getOption("lgi.certificate"),
-    sslkey=getOption("lgi.privatekey"),
+  return(postForm(path, .params=data, style='httppost', curl=lgi.curl.getHandle(), .opts=list(
     verbose=as.logical(trace)
   )))
 }
@@ -93,9 +102,7 @@ lgi.file.get <- function(repo, files, trace=getOption('lgi.trace')) {
     # but the last chunck would not be written until R exit and I've
     # found no way to close the CFILE.
     content <- getBinaryURL(paste(repo, fn,  sep='/'),
-      cainfo=getOption("lgi.cacert"),
-      sslcert=getOption("lgi.certificate"),
-      sslkey=getOption("lgi.privatekey"),
+      curl=lgi.curl.getHandle(),
       verbose=as.logical(trace)
     )
     f = file(fn, 'wb')
@@ -111,9 +118,7 @@ lgi.file.put <- function(repo, files, trace=getOption('lgi.trace')) {
       upload=TRUE,
       readdata=CFILE(fn, mode='rb')@ref,
       infilesize=file.info(fn)$size,
-      cainfo=getOption("lgi.cacert"),
-      sslcert=getOption("lgi.certificate"),
-      sslkey=getOption("lgi.privatekey"),
+      curl=lgi.curl.getHandle(),
       verbose=as.logical(trace)
     )
   }
@@ -126,9 +131,7 @@ lgi.file.list <- function(repo, trace=getOption('lgi.trace')) {
   dir <- sub('^.*/', '', repo)
   # do request
   result <- getURL(paste(server, '../repository_content.php?repository=', dir, sep=''),
-    cainfo=getOption("lgi.cacert"),
-    sslcert=getOption("lgi.certificate"),
-    sslkey=getOption("lgi.privatekey"),
+    curl=lgi.curl.getHandle(),
     verbose=as.logical(trace)
   )
   # return result
