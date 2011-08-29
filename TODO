@@ -12,6 +12,5 @@
 performance improvements:
 - use shared GLOBAL/FUNCTION repository for parApply, generate only once
 - remember results filename somehow so qstat isn't needed when fetching results
-- reuse curl connection to decrease ssl handshake overhead
 - add batch/arrayjob submission to LGI
 
