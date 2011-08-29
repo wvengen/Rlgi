@@ -38,7 +38,7 @@ lgi.request <- function(apipath, variables=c(), files=c(), path=NA, trace=getOpt
     'Accept' = 'text/plain',
     'Connection' = 'keep-alive'
   )
-  if (is.na(path)) path <- paste(getOption("lgi.server"), '/', apipath,  sep='')
+  if (is.na(path)) path <- paste(getOption("lgi.server"), apipath,  sep='')
   return(postForm(path, .params=data, style='httppost', curl=lgi.curl.getHandle(), .opts=list(
     verbose=as.logical(trace)
   )))
