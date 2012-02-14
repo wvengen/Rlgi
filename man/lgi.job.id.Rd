@@ -21,6 +21,7 @@ lgi.job.id(xml)
 \seealso{
   \code{\link[Rlgi]{lgi.job.status}},
   \code{\link[Rlgi]{lgi.job.repourl}};
+  \code{\link[Rlgi]{lgi.job.title}};
   \code{\link[Rlgi]{lgi.qsub}},
   \code{\link[Rlgi]{lgi.qstat}}.
 }

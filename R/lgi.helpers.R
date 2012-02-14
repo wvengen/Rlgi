@@ -68,6 +68,11 @@ lgi.job.id <- function(xml) {
   if (xmlName(xml)=="response") xml <- xml[["job"]]
   return(as.integer(xmlValue(xml[["job_id"]])))
 }
+# return job title from XML result (qsub/qstat), if any
+lgi.job.title <- function(xml) {
+  if (xmlName(xml)=="response") xml <- xml[["job"]]
+  return(xmlValue(xml[["job_specifics"]][["title"]]))
+}
 # return repository url from XML result (qsub/qstat)
 lgi.job.repourl <- function(xml) {
   if (xmlName(xml)=="response") xml <- xml[["job"]]
@@ -75,13 +80,17 @@ lgi.job.repourl <- function(xml) {
 }
 
 # submit LGI job directly, return XML node containing job information
-lgi.qsub <- function(rcode, application, files=c(), targetResources='any', writeAccess=NA, readAccess=NA, trace=getOption("lgi.trace")) {
+#  jobSpecifics can be either a string, or a list which will be converted to xml
+lgi.qsub <- function(rcode, application, files=c(), targetResources='any', jobSpecifics=NA, writeAccess=NA, readAccess=NA, trace=getOption("lgi.trace")) {
+  if (!is.null(attributes(jobSpecifics)))
+    jobSpecifics <- paste(mapply(function(k,v){toString(xmlNode(k,v))}, k=names(jobSpecifics), v=jobSpecifics), collapse='')
   args <- na.omit(c(
     'project' = getOption('lgi.project'),
     'user' = getOption('lgi.user'),
     'groups' = getOption('lgi.groups'),
     'application' = application,
     'target_resources' = targetResources,
+    'job_specifics' = jobSpecifics,
     'write_access' = writeAccess,
     'read_access' = readAccess,
     'input' = lgi.binhex(rcode),

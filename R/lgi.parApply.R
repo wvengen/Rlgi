@@ -203,6 +203,7 @@ lgi.parParApply <- function (X, FUN, ...,
   # LGI knows no array jobs as of yet, so submit them one by one
   jobids = c()
   jobrepos = c()
+  parent = NA
   for (i in 1:length(rowSet)) {
     if(apply.method==1) {
       program <- lgi.prepareCall(
@@ -227,10 +228,14 @@ lgi.parParApply <- function (X, FUN, ...,
       paste(prefix, "-GLOBAL", sep=''),
       paste(prefix, "-FUNCTION", sep='')
     )
-    result <- lgi.qsub(program, application, files[file.exists(files)])
+    jobSpecifics = c('title'=paste('Rlgi ParApply ',i,'/',length(rowSet), sep=''))
+    if (!is.na(parent)) jobSpecifics[['parent']] = parent
+    result <- lgi.qsub(program, application, files[file.exists(files)], jobSpecifics=jobSpecifics)
     jobids = c(jobids, lgi.job.id(result))
     jobrepos = c(jobrepos, lgi.job.repourl(result))
     if (as.logical(getOption("lgi.remove.files"))) unlink(files)
+    # use first job as parent
+    if (is.na(parent)) parent = lgi.job.id(result)
   } 
   lgi.debug("All jobs submitted, waiting for completion.", debug=debug) 
   # wait until all jobs are completed

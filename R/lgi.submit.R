@@ -2,6 +2,7 @@
 
 "lgi.submit" <- function(func, ..., 
                          application=getOption('lgi.application'),
+                         title=NA,
                          global.savelist=NULL, 
                          function.savelist=NULL, 
                          packages=NULL,
@@ -26,7 +27,8 @@
     paste(fname, "-GLOBAL", sep=''),
     paste(fname, "-FUNCTION", sep='')
   )
-  result <- lgi.qsub(program, application, files[file.exists(files)])
+  jobSpecifics <- c('title' = title)
+  result <- lgi.qsub(program, application, files[file.exists(files)], jobSpecifics=jobSpecifics)
   # we don't need these files anymore, they're uploaded anyway
   if (as.logical(getOption("lgi.remove.files"))) {
     unlink(paste(fname, "-GLOBAL", sep=''))
