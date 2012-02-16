@@ -78,6 +78,16 @@ lgi.job.repourl <- function(xml) {
   if (xmlName(xml)=="response") xml <- xml[["job"]]
   return(xmlValue(xml[["job_specifics"]][["repository_url"]]))
 }
+# return job input from XML result (qsub/qstat)
+lgi.job.input <- function(xml) {
+  if (xmlName(xml)=="response") xml <- xml[["job"]]
+  return(lgi.hexbin(xmlValue(xml[["input"]])))
+}
+# return output from XML result (qstat)
+lgi.job.output <- function(xml) {
+  if (xmlName(xml)=="response") xml <- xml[["job"]]
+  return(lgi.hexbin(xmlValue(xml[["output"]])))
+}
 
 # submit LGI job directly, return XML node containing job information
 #  jobSpecifics can be either a string, or a list which will be converted to xml
@@ -155,6 +165,9 @@ lgi.file.list <- function(repo, trace=getOption('lgi.trace')) {
 lgi.binhex <- function(b) {
   # there must be a better way ... please let me know!
   return(paste(sapply(unlist(strsplit(b,'')), function(x){sprintf('%02x',as.integer(charToRaw(x)))}), collapse=''))
+}
+lgi.hexbin <- function(h) {
+  return(rawToChar(as.raw(sapply(substring(h,seq(1,nchar(h),2),seq(2,nchar(h),2)), function(x){strtoi(x,16)}))));
 }
 
 
