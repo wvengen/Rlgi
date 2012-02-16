@@ -7,12 +7,12 @@
 }
 
 \usage{
-lgi.qsub(rcode, application, files=c(),
+lgi.qsub(rcode, application=NA, files=c(),
           debug=getOption("lgi.debug"), trace=getOption("lgi.trace"))
 }
 \arguments{
   \item{rcode}{R function to execute on LGI cluster}
-  \item{application}{LGI application for running R programs}
+  \item{application}{LGI application for running R programs, or \code{NA} for default}
   \item{files}{paths of files to upload before running the R job remotely}
   \item{debug}{Runs at debug level}
   \item{trace}{Runs at trace level}

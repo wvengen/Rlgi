@@ -91,7 +91,9 @@ lgi.job.output <- function(xml) {
 
 # submit LGI job directly, return XML node containing job information
 #  jobSpecifics can be either a string, or a list which will be converted to xml
-lgi.qsub <- function(rcode, application, files=c(), targetResources='any', jobSpecifics=NA, writeAccess=NA, readAccess=NA, trace=getOption("lgi.trace")) {
+lgi.qsub <- function(rcode, application=NA, files=c(), targetResources='any', jobSpecifics=NA, writeAccess=NA, readAccess=NA, trace=getOption("lgi.trace")) {
+  if (is.na(application))
+    application=getOption('lgi.application')
   if (!is.null(attributes(jobSpecifics)))
     jobSpecifics <- paste(mapply(function(k,v){toString(xmlNode(k,v))}, k=names(jobSpecifics), v=jobSpecifics), collapse='')
   args <- na.omit(c(

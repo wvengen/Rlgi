@@ -1,6 +1,6 @@
 \name{lgi.job.input}
 \alias{lgi.job.input}
-\input{Returns the job input from an LGI result}
+\title{Returns the job input from an LGI result}
 \description{
   Return the LGI job input from the output of an LGI command
   like \code{lgi.qsub} or \code{lgi.qstat}.
