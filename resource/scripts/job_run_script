@@ -33,6 +33,8 @@ if ("$R_PROFILE_USER"!="" && "$R_PROFILE_USER"!="`pwd`/LGI_Rprofile_user") {
 } else if (file.exists("$HOME/.Rprofile")) {
   source("$HOME/.Rprofile", TRUE)
 }
+# now make sure our user libs is in front of library path
+.libPaths(c("`pwd`/LGI_Rlibs_user", .libPaths()))
 EOF
 R_PROFILE_USER=`pwd`/LGI_Rprofile_user
 export R_PROFILE_USER
