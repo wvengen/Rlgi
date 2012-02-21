@@ -22,6 +22,26 @@ if [ ! "${Rprog}" ]; then
 	exit 2
 fi
 
+# setup R configuration
+cat >LGI_Rprofile_user <<EOF
+# to avoid the mirror selection dialog, specify a sensible mirror!
+#   full list at http://cran.r-project.org/mirrors.html
+local({r <- getOption("repos"); r["CRAN"] <- "http://cran-mirror.cs.uu.nl/"; options(repos=r)})
+# read original profile, if any
+if ("$R_PROFILE_USER"!="" && "$R_PROFILE_USER"!="`pwd`/LGI_Rprofile_user") {
+  source("$R_PROFILE_USER", TRUE)
+} else if (file.exists("$HOME/.Rprofile")) {
+  source("$HOME/.Rprofile", TRUE)
+}
+EOF
+R_PROFILE_USER=`pwd`/LGI_Rprofile_user
+export R_PROFILE_USER
+
+# use temporary library path for local package installation
+mkdir -p `pwd`/LGI_Rlibs_user
+R_LIBS_USER="`pwd`/LGI_Rlibs_user:$R_LIBS_USER"
+export R_LIBS_USER
+
 # and run R
 "${Rprog}" -q --no-save <LGI_input >LGI_output 2>&1
 
