@@ -68,6 +68,8 @@ lgi.readConfig(filename=path.expand('~/LGI.cfg'))
 </LGI_user_config>
 }
 Note that the entry \code{certificate} must come before \code{ca_chain}, and that the certificate and key sections (PEM blobs) must not be indented.
+
+When the environment variable \code{LGI_OPTIONS} is set, that will be used as default configuration file or directory instead.
 }
 \value{
   no return.
