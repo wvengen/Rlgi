@@ -89,12 +89,18 @@ lgi.readConfig <- function(filename=NA) {
   if (file.info(filename)[['isdir']]) {
     # read from configuration directory
     options(as.list(na.omit(sapply(optmapping, function(x) {
-        x=paste(filename, x, sep='');
-        if (file.exists(x)) scan(x, '', quiet=TRUE) else NA
+        f = paste(filename, x, sep='');
+        if (file.exists(f)) return(scan(f, '', quiet=TRUE))
+        # original LGI tools don't have this file, don't warn about it
+        if (x!='defaultapplication')
+          warning(paste("Missing LGI configuration: ", f), call.=FALSE)
+        return(NA)
       }))))
     options(as.list(na.omit(sapply(filemapping, function(x) {
-        x=paste(filename, x, sep='');
-        if (file.exists(x)) x else NA
+        x = paste(filename, x, sep='');
+        if (file.exists(x)) return(x)
+        warning(paste("Missing LGI configuration:", x), call.=FALSE)
+        return(NA)
       }))))
   } else {
     # read from configuration xml file
@@ -102,11 +108,17 @@ lgi.readConfig <- function(filename=NA) {
     if (xmlName(cfg)!='LGI_user_config')
       stop('Malformed LGI user configuration file (root element)')
     options(as.list(na.omit(sapply(optmapping, function(x) {
-        xmlValue(cfg[[x]])
+        v = xmlValue(cfg[[x]])
+        if (!is.na(v)) return(v)
+        warning(paste("Missing LGI configuration:", x, "in", filename), call.=FALSE)
+        return(NA)
       }))))
     # when certificate/key options exist, use file as variable
     options(as.list(na.omit(sapply(filemapping, function(x) {
-        if (!is.na(xmlValue(cfg[[x]]))) filename
+        v = xmlValue(cfg[[x]])
+        if (!is.na(v)) return(filename)
+        warning(paste("Missing LGI configuration:", x, "in", filename), call.=FALSE)
+        return(NA)
       }))))
   }
   return(TRUE)
