@@ -40,8 +40,11 @@ R_PROFILE_USER=`pwd`/LGI_Rprofile_user
 export R_PROFILE_USER
 
 # use temporary library path for local package installation
-mkdir -p `pwd`/LGI_Rlibs_user
-R_LIBS_USER="`pwd`/LGI_Rlibs_user:$R_LIBS_USER"
+#  some versions of R have a problem when both R_LIBS and R_LIBS_USER are defined; define both
+mkdir -p LGI_Rlibs_user
+R_LIBS="`pwd`/LGI_Rlibs_user:$R_LIBS"
+export R_LIBS
+R_LIBS_USER="`pwd`/LGI_Rlibs_user:$_LIBS_USER"
 export R_LIBS_USER
 
 # and run R
