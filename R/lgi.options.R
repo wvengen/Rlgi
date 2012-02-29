@@ -13,11 +13,11 @@ lgi.setDefaultOptions <- function() {
   #default application to submit to
   options(lgi.application='R') # TODO use NULL as default; add checking somewhere
   #certificate authority to check LGI server against
-  options(lgi.cacert=NA)
+  options(lgi.cacert=NULL)
   #certificate for authentication with LGI server
-  options(lgi.certificate=NA)
+  options(lgi.certificate=NULL)
   #key for authentication with LGI server
-  options(lgi.privatekey=NA)
+  options(lgi.privatekey=NULL)
   #LGI user (this could have been autodetected if there were openssl on CRAN)
   options(lgi.user=NA)
   #LGI groups
