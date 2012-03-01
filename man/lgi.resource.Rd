@@ -1,5 +1,5 @@
 \name{lgi.resource}
-\alias{lgi.resource.repourl}}
+\alias{lgi.resource.repourl}
 \title{LGI resource functions}
 \description{
   When Rlgi is loaded not on your own computer, but on a resource node, it
