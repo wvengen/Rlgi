@@ -36,8 +36,13 @@ lgi.setDefaultOptions <- function() {
   # should we save the global environment by default.
   options(lgi.save.global=FALSE)
 
-  # now read user configuration
-  lgi.readConfig()
+  # now read configuration
+  if (lgi.resource.check()) {
+    message("Rlgi resource mode; operations restricted to file access.")
+    lgi.resource.readConfig()
+  } else {
+    lgi.readConfig()
+  }
 }
 
 lgi.options <- function(...) {
@@ -46,6 +51,7 @@ lgi.options <- function(...) {
 lgi.getOption <- function(...) {
   getOption(...)
 }
+
 # return default configuration file or directory
 #   see https://github.com/wvengen/LGI/wiki/User-configuration
 lgi.getDefaultConfig <- function() {
@@ -63,7 +69,9 @@ lgi.getDefaultConfig <- function() {
     return(NA)
   return(filename)
 }
-# read settings from single configuration file or directory
+
+# read settings from single user configuration file or directory
+#   when running as a resource, the resource configuration is read instead
 lgi.readConfig <- function(filename=NA) {
   # figure out default file to read when none given
   if (is.na(filename)) {
@@ -123,3 +131,5 @@ lgi.readConfig <- function(filename=NA) {
   }
   return(TRUE)
 }
+
+

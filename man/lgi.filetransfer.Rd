@@ -1,7 +1,7 @@
 \name{lgi.filetransfer}
-\alias{lgi.filetransfer}
 \alias{lgi.file.get}
 \alias{lgi.file.put}
+\alias{lgi.file.list}
 \title{Uploads or downloads files to an LGI repository}
 \description{
   LGI jobs usually retrieve files from their repository before starting, and
@@ -30,6 +30,7 @@ lgi.file.list(repo)
 
 \seealso{
   \code{\link[Rlgi]{lgi.job.repourl}}
+  \code{\link[Rlgi]{lgi.resource.repourl}}
 }
 
 \keyword{interface}
